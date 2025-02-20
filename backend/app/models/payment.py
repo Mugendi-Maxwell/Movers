@@ -12,10 +12,4 @@ class Payment(db.Model):
     # Define relationship to the booking
     booking = db.relationship('Booking', backref=db.backref('payments', lazy=True))
 
-    def __init__(self, amount, status, booking_id):
-        self.amount = amount
-        self.status = status
-        self.booking_id = booking_id
 
-    def __repr__(self):
-        return f'<Payment {self.id}, Amount: {self.amount}, Status: {self.status}>'

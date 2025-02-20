@@ -5,7 +5,6 @@ from app.services.booking_service import BookingService
 
 api = Api()
 
-# Parser for validating input
 booking_parser = reqparse.RequestParser()
 booking_parser.add_argument('selected_inventory', type=dict, required=True, help='Selected inventory is required.')
 booking_parser.add_argument('current_address', type=str, required=True, help='Current address is required.')

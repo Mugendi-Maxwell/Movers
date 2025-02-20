@@ -62,7 +62,6 @@ class BookingResource(Resource):
         except Exception as e:
             return {'message': f'Error deleting booking: {str(e)}'}, 500
 
-# Register the route for individual booking operations
 api.add_resource(BookingResource, '/bookings/<int:booking_id>')
 
 

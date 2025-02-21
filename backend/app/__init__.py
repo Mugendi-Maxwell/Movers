@@ -7,21 +7,21 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    # Initialize extensions
     db.init_app(app)
-    api = Api(app)  # Initialize Flask-RESTful Api
+    api = Api(app) 
 
-    # Register resources (controllers)
-    from app.controllers.booking_controller import BookingResource
-    from app.controllers.payment_controller import PaymentResource
-    from app.controllers.user_controller import UserResource
-
-    # Add resources with URL routes
-    api.add_resource(BookingResource, '/bookings/<int:id>', '/bookings')  # Example for booking resource
-    api.add_resource(PaymentResource, '/payments/<int:id>', '/payments')  # Example for payment resource
-    api.add_resource(UserResource, '/users/<int:id>', '/users')  # Example for user resource
+    from app.controllers.booking_controller import BookingResource, BookingListResource
+    from app.controllers.payment_controller import PaymentResource, PaymentListResource
+    from app.controllers.user_controller import UserResource, UserListResource
 
    
+    api.add_resource(BookingListResource, '/bookings')  # For creating and listing bookings
+    api.add_resource(BookingResource, '/bookings/<int:id>')  # For retrieving, updating, and deleting a single booking
 
-    
+    api.add_resource(PaymentListResource, '/payments')  # For creating and listing payments
+    api.add_resource(PaymentResource, '/payments/<int:id>')  
+
+    api.add_resource(UserListResource, '/users')  
+    api.add_resource(UserResource, '/users/<int:id>')  
+
     return app

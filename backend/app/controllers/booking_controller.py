@@ -5,7 +5,6 @@ from app.services.booking_service import BookingService
 
 api = Api()
 
-# Parser for validating input
 booking_parser = reqparse.RequestParser()
 booking_parser.add_argument('selected_inventory', type=dict, required=True, help='Selected inventory is required.')
 booking_parser.add_argument('current_address', type=str, required=True, help='Current address is required.')
@@ -62,7 +61,6 @@ class BookingResource(Resource):
         except Exception as e:
             return {'message': f'Error deleting booking: {str(e)}'}, 500
 
-# Register the route for individual booking operations
 api.add_resource(BookingResource, '/bookings/<int:booking_id>')
 
 

@@ -7,7 +7,7 @@ api = Api()
 
 class InventoryListResource(Resource):
     def get(self):
-        # Assume InventoryService.get_all_items() returns a list of dictionaries
+       
         items = InventoryService.get_all_items()
         return items, 200
 

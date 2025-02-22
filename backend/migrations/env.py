@@ -7,7 +7,7 @@ from app.models.user import User
 from app.models.booking import Booking
 from app.models.payment import Payment
 from app.models.feedback import Feedback
-
+from app.models.inventory import Inventory
 # Load Alembic configuration
 config = context.config
 

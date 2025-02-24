@@ -6,6 +6,7 @@ import Feedback from "./pages/User/Feedback";
 import Profile from "./pages/User/profile";
 import Booking from "./pages/User/BookingForm";
 import Login from "./pages/User/Login";
+import Payment from "./pages/User/Payment";
 
 function App() {
   return (
@@ -17,7 +18,8 @@ function App() {
       <Route path="/profile" element={<Profile />} />
       <Route path="/booking" element={<Booking />} />
       <Route path="/login" element={<Login />} />
-    </Routes>
+      <Route path="/Payment" element={<Payment />} />
+    </Routes> 
   );
 }
 

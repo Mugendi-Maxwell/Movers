@@ -1,0 +1,81 @@
+/* Import custom font from Google Fonts (Poppins) */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+/* Global Reset */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: 'Poppins', Arial, sans-serif;
+  background: #f8f9fa;
+}
+
+/* Home Container: full viewport height */
+.home-container {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* Top Header with Company Title */
+.top-header {
+  background: #fff;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.company-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #4a4a4a;
+  text-align: center;
+}
+
+/* Navigation Bar with Icons stretched across width */
+.icon-nav {
+  background: #f8f9fa;
+}
+.icon-nav ul {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.icon-nav li {
+  flex: 1;               /* Each icon takes equal space */
+  text-align: center;
+  padding: 15px 0;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.icon-nav li:hover {
+  background: #e0e0e0;
+}
+
+/* Icon styling (Heroicons are SVGs) */
+.icon {
+  width: 28px;
+  height: 28px;
+  color: black;
+}
+
+/* Main Content Area */
+.main-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .home-container {
+    flex-direction: column;
+    width: 100vw;
+    height: 100%;
+  }
+  .icon-nav li {
+    padding: 10px 0;
+  }
+}

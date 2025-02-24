@@ -10,7 +10,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetch("/api/bookings").then(res => res.json()).then(data => setBookings(data));
-    fetch("/api/movers").then(res => res.json()).then(data => setMovers(data));
+    
     fetch("/api/users").then(res => res.json()).then(data => setUsers(data));
   }, []);
 

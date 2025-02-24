@@ -1,126 +1,199 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import Navbar from "./Navbar"; // Adjust the path as needed
+import {
+  CalendarDaysIcon,
+  CurrencyDollarIcon,
+  ClipboardDocumentListIcon,
+  ChatBubbleBottomCenterIcon,
+  DocumentTextIcon,
+  StarIcon,
+  UserCircleIcon,
+} from "@heroicons/react/24/outline";
+import "./Profile.css";
 
 const Profile = () => {
-    const [user, setUser] = useState({
-        name: "John Doe",
-        email: "johndoe@example.com",
-        phone: "+254712345678",
-        profilePic: null, // No predefined image URL
-    });
+  // User profile state (initial details)
+  const [user, setUser] = useState({
+    name: "John Doe",
+    username: "johndoe",
+    email: "johndoe@example.com",
+    phone: "+254712345678",
+  });
+  
+  // Toggle editing mode
+  const [editing, setEditing] = useState(false);
+  const [formData, setFormData] = useState(user);
 
-    const [editing, setEditing] = useState(false);
-    const [formData, setFormData] = useState(user);
+  // For dynamic sidebar data fetching:
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [content, setContent] = useState(null);
 
-    // Handle input change
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+  // Fetch data from backend when a sidebar sub-item is selected
+  useEffect(() => {
+    if (!selectedItem) return;
+
+    const fetchData = async () => {
+      try {
+        const res = await fetch(`/api/data?item=${selectedItem}`);
+        if (!res.ok) throw new Error("Network response was not ok");
+        const result = await res.json();
+        setContent(result);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setContent({ error: "Failed to fetch data." });
+      }
     };
 
-    // Handle profile update
-    const handleUpdate = () => {
-        setUser(formData);
-        setEditing(false);
-    };
+    fetchData();
+  }, [selectedItem]);
 
-    // Handle image upload
-    const handleImageUpload = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const imageUrl = URL.createObjectURL(file); // Create local URL for preview
-            setUser({ ...user, profilePic: imageUrl });
-        }
-    };
+  // Handle input changes for editing profile details
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-    return (
-        <div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg mt-10">
-            <h2 className="text-2xl font-semibold text-center mb-4">User Profile</h2>
+  // Save updated profile details
+  const handleUpdate = () => {
+    setUser(formData);
+    setEditing(false);
+    // Optionally, post changes to the backend here
+  };
 
-            <div className="flex flex-col items-center">
-                <label htmlFor="profilePic" className="cursor-pointer">
-                    <img
-                        src={user.profilePic || "https://via.placeholder.com/150"}
-                        alt="Profile"
-                        className="w-24 h-24 rounded-full border-2 border-gray-300"
-                    />
-                </label>
+  return (
+    <div>
+      <Navbar />
+      <div className="profile-container">
+        {/* Left Sidebar */}
+        <aside className="profile-sidebar">
+          <h2>My Dashboard</h2>
+          <ul>
+            {/* Booking Details */}
+            <li>
+              <div className="sidebar-item">
+                <CalendarDaysIcon className="sidebar-icon" />
+                <h1>Booking Details</h1>
+              </div>
+              <ul className="sub-list">
+                <li onClick={() => setSelectedItem("date")}>
+                  <div className="sidebar-sub-item">
+                    <CalendarDaysIcon className="sidebar-sub-icon" />
+                    <span>Date</span>
+                  </div>
+                </li>
+                <li onClick={() => setSelectedItem("price")}>
+                  <div className="sidebar-sub-item">
+                    <CurrencyDollarIcon className="sidebar-sub-icon" />
+                    <span>Price</span>
+                  </div>
+                </li>
+                <li onClick={() => setSelectedItem("inventory")}>
+                  <div className="sidebar-sub-item">
+                    <ClipboardDocumentListIcon className="sidebar-sub-icon" />
+                    <span>Inventory</span>
+                  </div>
+                </li>
+              </ul>
+            </li>
+            {/* Your Feedback */}
+            <li>
+              <div className="sidebar-item">
+                <ChatBubbleBottomCenterIcon className="sidebar-icon" />
+                <h2>Your Feedback</h2>
+              </div>
+              <ul className="sub-list">
+                <li onClick={() => setSelectedItem("comment")}>
+                  <div className="sidebar-sub-item">
+                    <DocumentTextIcon className="sidebar-sub-icon" />
+                    <span>Comment</span>
+                  </div>
+                </li>
+                <li onClick={() => setSelectedItem("rating")}>
+                  <div className="sidebar-sub-item">
+                    <StarIcon className="sidebar-sub-icon" />
+                    <span>Rating</span>
+                  </div>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </aside>
+
+        {/* Main Content */}
+        <main className="profile-main">
+          {/* Conditionally add the "editing" class to profile-info */}
+          <div className={`profile-info ${editing ? "editing" : ""}`}>
+            {/* Avatar Icon */}
+            <div className="avatar-icon-wrapper">
+              <UserCircleIcon className="avatar-icon" />
+            </div>
+            {editing ? (
+              <>
                 <input
-                    type="file"
-                    id="profilePic"
-                    className="hidden"
-                    accept="image/*"
-                    onChange={handleImageUpload}
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="Enter your name"
                 />
-                <p className="text-sm text-gray-500 mt-2">Click to upload image</p>
-            </div>
+                <input
+                  type="text"
+                  name="username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  placeholder="Enter your username"
+                />
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="Enter your email"
+                />
+                <input
+                  type="text"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  placeholder="Enter your phone number"
+                />
+                <button onClick={handleUpdate}>
+                  Confirm change and submit
+                </button>
+              </>
+            ) : (
+              <>
+                <h3>{user.name}</h3>
+                <p>Username: {user.username}</p>
+                <p>Email: {user.email}</p>
+                <p>Phone: {user.phone}</p>
+                <button onClick={() => setEditing(true)}>Change Details</button>
+              </>
+            )}
 
-            <div className="mt-4">
-                {editing ? (
+            {/* Dynamic Content Area for sidebar sub-items */}
+            <div className="dynamic-content">
+              {selectedItem ? (
+                content ? (
+                  content.error ? (
+                    <p className="error-text">{content.error}</p>
+                  ) : (
                     <>
-                        <label className="block text-sm font-medium">Name</label>
-                        <input
-                            type="text"
-                            name="name"
-                            value={formData.name}
-                            onChange={handleChange}
-                            className="w-full p-2 border rounded mt-1"
-                        />
-
-                        <label className="block text-sm font-medium mt-2">Email</label>
-                        <input
-                            type="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            className="w-full p-2 border rounded mt-1"
-                        />
-
-                        <label className="block text-sm font-medium mt-2">Phone</label>
-                        <input
-                            type="text"
-                            name="phone"
-                            value={formData.phone}
-                            onChange={handleChange}
-                            className="w-full p-2 border rounded mt-1"
-                        />
-
-                        <button
-                            onClick={handleUpdate}
-                            className="w-full mt-4 bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
-                        >
-                            Save Changes
-                        </button>
+                      <h4>Data for: {selectedItem}</h4>
+                      <pre>{JSON.stringify(content, null, 2)}</pre>
                     </>
+                  )
                 ) : (
-                    <>
-                        <p className="text-lg">
-                            <strong>Name:</strong> {user.name}
-                        </p>
-                        <p className="text-lg">
-                            <strong>Email:</strong> {user.email}
-                        </p>
-                        <p className="text-lg">
-                            <strong>Phone:</strong> {user.phone}
-                        </p>
-
-                        <button
-                            onClick={() => setEditing(true)}
-                            className="w-full mt-4 bg-gray-600 text-white p-2 rounded hover:bg-gray-700"
-                        >
-                            Edit Profile
-                        </button>
-                    </>
-                )}
+                  <p>Loading...</p>
+                )
+              ) : (
+                <p>Select a sub-item on the left to see details.</p>
+              )}
             </div>
-
-            <button className="w-full mt-4 text-red-600 hover:underline">
-                Change Password
-            </button>
-
-            <button className="w-full mt-4 bg-red-500 text-white p-2 rounded hover:bg-red-600">
-                Logout
-            </button>
-        </div>
-    );
+          </div>
+        </main>
+      </div>
+    </div>
+  );
 };
 
 export default Profile;

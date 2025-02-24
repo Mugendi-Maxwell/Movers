@@ -1,0 +1,49 @@
+/* Navbar container */
+.icon-navbar {
+    background-color: #f8f9fa;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 10px 20px;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* Company title styling */
+  .navbar-logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #4a4a4a;
+    margin-bottom: 10px;
+  }
+  
+  /* Icon row styling */
+  .navbar-icons {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .navbar-icons li {
+    flex: 1;
+    text-align: center;
+  }
+  
+  /* Icon styling */
+  .icon {
+    width: 28px;
+    height: 28px;
+    color: #000;
+    transition: color 0.3s;
+  }
+  
+  .icon:hover {
+    color: #555;
+  }
+  

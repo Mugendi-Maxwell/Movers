@@ -1,0 +1,131 @@
+/* Full-page container for Feedback */
+.feedback-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;       /* Full viewport height */
+    padding: 20px;           /* Ensure there's some spacing on smaller screens */
+    background: #f8f9fa;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Enlarged, centered feedback card */
+  .feedback-container {
+    background: #fff;
+    border-radius: 8px;
+    padding: 40px;
+    width: 100%;
+    max-width: 800px;        /* Increased max-width for a larger form */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Header: mood icons and close icon */
+  .feedback-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .feedback-moods {
+    display: flex;
+    gap: 15px;
+  }
+  
+  .mood-icon {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    color: #999;
+    transition: color 0.2s;
+  }
+  
+  .mood-icon:hover {
+    color: #555;
+  }
+  
+  .mood-icon.selected {
+    color: #333;
+  }
+  
+  .close-icon {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    color: #999;
+    transition: color 0.2s;
+  }
+  
+  .close-icon:hover {
+    color: #555;
+  }
+  
+  /* Feedback form styling */
+  .feedback-form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+  }
+  
+  .feedback-form label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .feedback-form textarea {
+    resize: none;
+    height: 120px;          /* Taller textarea for more feedback space */
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .feedback-stars {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 15px;
+  }
+  
+  .star-icon {
+    width: 24px;
+    height: 24px;
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  
+  .star-icon:hover {
+    color: #bbb;
+  }
+  
+  .star-icon.filled {
+    color: #ffcc00;
+  }
+  
+  .submit-button {
+    background: #4a4a4a;
+    color: #fff;
+    border: none;
+    padding: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+  }
+  
+  .submit-button:hover {
+    background: #3a3a3a;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 600px) {
+    .feedback-container {
+      max-width: 100%;
+      padding: 20px;
+    }
+    .feedback-form textarea {
+      height: 100px;
+    }
+  }
+  

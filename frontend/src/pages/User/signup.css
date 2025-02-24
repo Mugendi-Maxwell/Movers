@@ -1,0 +1,103 @@
+/* Container for the entire signup section */
+.signup-container {
+    display: flex;
+    width: 80%;
+    margin: 50px auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  /* Left side: form area */
+  .signup-form {
+    flex: 1;
+    padding: 50px;
+  }
+  
+  .signup-form h1 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .signup-form form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .signup-form label {
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .signup-form input {
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+  }
+  
+  /* Password container to hold eye icon for toggling visibility */
+  .password-container {
+    position: relative;
+  }
+  
+  /* Eye toggle button (optional) */
+  .toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+  }
+  
+  /* Submit button styling */
+  .signup-form button[type="submit"] {
+    padding: 12px;
+    background: #4a4a4a;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 10px;
+  }
+  
+  .signup-form button[type="submit"]:hover {
+    background: #3a3a3a;
+  }
+  
+  /* Right side: icon area */
+  .signup-illustration {
+    width: 40%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+  }
+  
+  .signup-icon {
+    width: 200px; /* Adjust size as desired */
+    height: 200px;
+    color: #ccc;   /* Change icon color */
+  }
+  
+  /* Responsive for smaller screens */
+  @media (max-width: 768px) {
+    .signup-container {
+      flex-direction: column;
+      width: 95%;
+      margin: 20px auto;
+    }
+  
+    .signup-illustration {
+      display: none; /* Hide icon on mobile if desired */
+    }
+  }
+  

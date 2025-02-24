@@ -1,0 +1,85 @@
+.book-move-container {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  width: 80%;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.book-move-form {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #f8f9fa;
+}
+
+.book-move-form h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.book-move-form form {
+  display: flex;
+  flex-direction: column;
+}
+
+.book-move-form label {
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: #333;
+}
+
+.book-move-form input,
+.book-move-form select {
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.book-move-form button {
+  padding: 12px;
+  background: #4a4a4a;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 10px;
+}
+
+.book-move-form button:hover {
+  background: #3a4a4a;
+}
+
+.book-move-illustration {
+  flex: 1;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.book-move-illustration img {
+  max-width: 100%;
+  height: auto;
+}
+
+@media (max-width: 768px) {
+  .book-move-container {
+    flex-direction: column;
+    width: 90%;
+  }
+
+  .book-move-illustration {
+    display: none;
+  }
+}

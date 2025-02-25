@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaTruck, FaUsers, FaCalendarAlt } from "react-icons/fa";
-// import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 
 const Dashboard = () => {
   const [bookings, setBookings] = useState([]);

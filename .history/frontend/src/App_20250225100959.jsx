@@ -1,7 +1,7 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Home from "./pages/User/Home";
-import Signup from "./pages/User/Signup";
+import Signup from "./pages/User/signup"; // Adjusted import based on actual file name
 import Feedback from "./pages/User/Feedback";
 import Profile from "./pages/User/Profile";
 import Booking from "./pages/User/BookingForm";
@@ -22,4 +22,3 @@ function App() {
 }
 
 export default App;
-

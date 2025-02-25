@@ -1,56 +1,45 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { FaTruck, FaUsers, FaCalendarAlt } from "react-icons/fa";
-import { Button } from "@/components/ui/button";
 
 const Dashboard = () => {
-  const [bookings, setBookings] = useState([]);
-  const [movers, setMovers] = useState([]);
-  const [users, setUsers] = useState([]);
+    const [stats, setStats] = useState({
+        totalBookings: 0,
+        totalInventory: 0,
+    });
 
-  useEffect(() => {
-    fetch("/api/bookings").then(res => res.json()).then(data => setBookings(data));
-    
-    fetch("/api/users").then(res => res.json()).then(data => setUsers(data));
-  }, []);
+    useEffect(() => {
+        // Simulated API call (Replace with real API calls)
+        fetch("/api/admin/stats")
+            .then((res) => res.json())
+            .then((data) => setStats(data))
+            .catch((err) => console.error("Error fetching stats:", err));
+    }, []);
 
-  return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-4">Admin Dashboard</h1>
+    return (
+        <div className="p-6 bg-gray-100 min-h-screen">
+            <h1 className="text-3xl font-bold text-gray-800 mb-6">Admin Dashboard</h1>
 
-      <div className="grid grid-cols-3 gap-6">
-        <div className="bg-white shadow-lg rounded-xl p-4">
-          <h2 className="text-xl font-semibold flex items-center gap-2">
-            <FaCalendarAlt /> Total Bookings
-          </h2>
-          <p className="text-2xl font-bold">{bookings.length}</p>
-          <Link to="/admin/move-bookings">
-            <Button className="mt-3">View Bookings</Button>
-          </Link>
+            <div className="grid grid-cols-2 gap-6">
+                {/* Total Bookings */}
+                <div className="bg-white p-6 shadow-md rounded-lg">
+                    <h2 className="text-xl font-semibold">Total Bookings</h2>
+                    <p className="text-4xl font-bold text-blue-500">{stats.totalBookings}</p>
+                    <Link to="/admin/bookings" className="text-blue-600 hover:underline">
+                        Manage Bookings
+                    </Link>
+                </div>
+
+                {/* Total Inventory */}
+                <div className="bg-white p-6 shadow-md rounded-lg">
+                    <h2 className="text-xl font-semibold">Total Inventory</h2>
+                    <p className="text-4xl font-bold text-yellow-500">{stats.totalInventory}</p>
+                    <Link to="/admin/inventory" className="text-yellow-600 hover:underline">
+                        Manage Inventory
+                    </Link>
+                </div>
+            </div>
         </div>
-
-        <div className="bg-white shadow-lg rounded-xl p-4">
-          <h2 className="text-xl font-semibold flex items-center gap-2">
-            <FaTruck /> Movers Available
-          </h2>
-          <p className="text-2xl font-bold">{movers.length}</p>
-          <Link to="/admin/movers">
-            <Button className="mt-3">Manage Movers</Button>
-          </Link>
-        </div>
-
-        <div className="bg-white shadow-lg rounded-xl p-4">
-          <h2 className="text-xl font-semibold flex items-center gap-2">
-            <FaUsers /> Registered Users
-          </h2>
-          <p className="text-2xl font-bold">{users.length}</p>
-          <Link to="/admin/users">
-            <Button className="mt-3">View Users</Button>
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default Dashboard;

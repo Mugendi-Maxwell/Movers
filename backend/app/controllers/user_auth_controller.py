@@ -1,8 +1,10 @@
 from flask_restful import Resource
 from flask import request
 from app.models.user import User
-from app.extensions import db
+from app.extensions import db, jwt_blacklist  # Import JWT blacklist
+from flask_jwt_extended import create_access_token, jwt_required
 import bcrypt
+from app.services.auth_service import AuthService
 
 class UserSignupResource(Resource):
     def post(self):
@@ -30,21 +32,17 @@ class UserSignupResource(Resource):
             return {"message": "User with this email already exists."}, 400
 
         # Hash the password using bcrypt
-        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-        # Convert hashed password bytes to string for storage
-        hashed_password = hashed_password.decode('utf-8')
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
         # Create a new User instance
-        new_user = User(
-            name=name,
-            email=email,
-            password=hashed_password  # Store the hashed password
-        )
+        new_user = User(name=name, email=email, password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
 
-        # Return a success message and user data (excluding password)
-        return {"message": "User created successfully", "user": new_user.to_dict()}, 201
+        # Generate JWT token for the newly registered user
+        access_token = create_access_token(identity=new_user.id)
+
+        return {"message": "User created successfully", "user": new_user.to_dict(), "token": access_token}, 201
 
 class UserLoginResource(Resource):
     def post(self):
@@ -55,7 +53,7 @@ class UserLoginResource(Resource):
             "email": "john@example.com",
             "password": "plaintext_password"
         }
-        This endpoint verifies the admin credentials and returns user info on success.
+        This endpoint verifies the user credentials and returns user info on success.
         """
         data = request.get_json()
         email = data.get('email')
@@ -70,15 +68,17 @@ class UserLoginResource(Resource):
 
         # Compare the provided password with the stored hashed password
         if bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
-            return {"message": "Login successful", "user": user.to_dict()}, 200
+            # Generate JWT token
+            access_token = create_access_token(identity=user.id)
+            return {"message": "Login successful", "user": user.to_dict(), "token": access_token}, 200
         else:
             return {"message": "Incorrect password"}, 401
 
 class UserLogoutResource(Resource):
+    @jwt_required()
     def post(self):
         """
         POST /users/logout
-        Since logout in a stateless API (e.g., JWT based) is generally handled client-side,
-        this endpoint simply returns a logout confirmation.
+        Calls AuthService to log out and delete the user account.
         """
-        return {"message": "Logout successful"}, 200
+        return AuthService.logout_and_delete_user()

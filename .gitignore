@@ -8,3 +8,6 @@ ye
 
 *.log
 *.sqlite3
+__pycache__/
+node_modules/
+.history/

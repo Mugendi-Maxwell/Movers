@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "./BookMove.css";
-// Import the image using the correct relative path
-import moveImage from "../../assets/image.png";
 import Navbar from "./Navbar";
+import "./BookMove.css";
+import moveImage from "../../assets/image.png";
+
+// Import the booking service function
+import { createUserBooking } from "../../services/bookingService";
 
 const BookMove = () => {
   const [formData, setFormData] = useState({
@@ -18,10 +20,11 @@ const BookMove = () => {
 
   const [moveTypes, setMoveTypes] = useState([]);
 
-  // Fetch move types from the inventory API
+  // Fetch move types from the inventory API using Vite environment variable for base URL
   useEffect(() => {
+    const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
     axios
-      .get("https://your-api.com/inventory")
+      .get(`${API_BASE_URL}/inventory`)
       .then((response) => {
         setMoveTypes(response.data);
       })
@@ -30,12 +33,12 @@ const BookMove = () => {
       });
   }, []);
 
-  // Handle input changes
+  // Handle input changes for form fields
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Update price when move type changes
+  // Update move type and price when move type selection changes
   const handleMoveTypeChange = (e) => {
     const selectedMove = moveTypes.find((item) => item.type === e.target.value);
     setFormData({
@@ -45,18 +48,19 @@ const BookMove = () => {
     });
   };
 
-  // Handle form submission by posting data to the bookings endpoint
-  const handleSubmit = (e) => {
+  // Handle form submission by calling the booking service endpoint
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    axios
-      .post("https://your-api.com/bookings", formData)
-      .then(() => {
-        alert("Move booked successfully!");
-      })
-      .catch((error) => {
-        console.error("Error booking move:", error);
-        alert("Failed to book move.");
-      });
+    try {
+      // Call the createUserBooking function from the booking service
+      const bookingResponse = await createUserBooking(formData);
+      alert("Move booked successfully!");
+      console.log("Booking response:", bookingResponse);
+      // Optionally, you can reset the form here or redirect the user
+    } catch (error) {
+      console.error("Error booking move:", error);
+      alert("Failed to book move.");
+    }
   };
 
   return (

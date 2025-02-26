@@ -1,31 +1,49 @@
 import React, { useState } from 'react';
-import { UserPlusIcon } from '@heroicons/react/24/outline'; 
+import { UserPlusIcon } from '@heroicons/react/24/outline';
 import './signup.css';
+// Import the signup function from your authentication service
+import { signup } from '../../services/authService';
 
 const Signup = () => {
-  // State for each input
+  // State for each input field
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('');
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
 
-  // Submit handler
-  const handleSubmit = (e) => {
+  // Submit handler calls the signup service endpoint
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle signup logic here
-    console.log({
+    setError(null);
+    setSuccess(null);
+
+    const signupData = {
       name,
       email,
       password,
       role,
-    });
+    };
+
+    try {
+      
+      const result = await signup(signupData);
+      setSuccess("Signup successful! Please log in.");
+      console.log("Signup result:", result);
+      // Optionally, redirect the user to the login page here.
+    } catch (err) {
+      console.error("Signup error:", err);
+      setError("Signup failed. Please try again.");
+    }
   };
 
   return (
     <div className="signup-container">
-     
       <div className="signup-form">
         <h1>Create an account</h1>
+        {error && <p className="error">{error}</p>}
+        {success && <p className="success">{success}</p>}
         <form onSubmit={handleSubmit}>
           {/* Name Field */}
           <label htmlFor="name">Name</label>
@@ -47,6 +65,7 @@ const Signup = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
 
+          {/* Password Field */}
           <label htmlFor="password">Password</label>
           <div className="password-container">
             <input
@@ -56,7 +75,6 @@ const Signup = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            
           </div>
 
           {/* Role Field */}
@@ -70,11 +88,11 @@ const Signup = () => {
           />
 
           {/* Submit Button */}
-          <button type="submit">Sign in</button>
+          <button type="submit">Sign up</button>
         </form>
       </div>
 
-      {/* Right side: signup icon (replaces the illustration image) */}
+      {/* Right side: signup icon */}
       <div className="signup-illustration">
         <UserPlusIcon className="signup-icon" />
       </div>

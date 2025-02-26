@@ -7,7 +7,7 @@ import Profile from "./pages/User/Profile";
 import Booking from "./pages/User/BookingForm";
 import Login from "./pages/User/Login";
 import Payment from "./pages/User/Payment";
-import Dashboard from "./pages/Admin/Dashboard";
+import Dashboard from "./pages/dmin/Dashboard";
 import inventory from "./pages/Admin/inventory";
 import MoveBookings from "./pages/Admin/MoveBookings";
 

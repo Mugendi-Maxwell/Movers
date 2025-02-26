@@ -10,7 +10,7 @@ import Payment from "./pages/User/Payment";
 import Dashboard from "./pages/Admin/Dashboard";
 import inventory from "./pages/Admin/inventory";
 import MoveBookings from "./pages/Admin/MoveBookings";
-
+import Inventory from "./pages/Admin/inventory";
 
 function App() {
   return (
@@ -23,9 +23,9 @@ function App() {
       <Route path="/booking" element={<Booking />} />
       <Route path="/login" element={<Login />} />
       <Route path="/Payment" element={<Payment />} />
-      <Route path="/Admin/Dashboard" element={<AdminDashboard />} />
+      <Route path="/Dasboard" element={<Dashboard/>} />
       <Route path="/inventory" element={<inventory/>} />
-      <Route path="/MoveBookings" element={<MoveBookings/>} />
+      <Route path="/MoveBooki" element={<Dashboard/>} />
     </Routes> 
   );
 }

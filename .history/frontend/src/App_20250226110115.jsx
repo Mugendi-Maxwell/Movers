@@ -7,7 +7,7 @@ import Profile from "./pages/User/Profile";
 import Booking from "./pages/User/BookingForm";
 import Login from "./pages/User/Login";
 import Payment from "./pages/User/Payment";
-import Dashboard from "./pages/Admin/Dashboard";
+import Dashboard from "./pages/admin/Dashboard";
 import inventory from "./pages/Admin/inventory";
 import MoveBookings from "./pages/Admin/MoveBookings";
 
@@ -23,7 +23,7 @@ function App() {
       <Route path="/booking" element={<Booking />} />
       <Route path="/login" element={<Login />} />
       <Route path="/Payment" element={<Payment />} />
-      <Route path="/Admin/Dashboard" element={<AdminDashboard />} />
+      <Route path="/admin/Dashboard" element={<AdminDashboard />} />
       <Route path="/inventory" element={<inventory/>} />
       <Route path="/MoveBookings" element={<MoveBookings/>} />
     </Routes> 

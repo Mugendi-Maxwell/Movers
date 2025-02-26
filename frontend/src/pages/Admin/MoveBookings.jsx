@@ -30,7 +30,7 @@ const MoveBookings = () => {
       if (!response.ok) {
         throw new Error("Failed to update status");
       }
-      // Update state after successful status update
+    
       setBookings((prevBookings) =>
         prevBookings.map((booking) =>
           booking.id === id ? { ...booking, status: newStatus } : booking

@@ -1,35 +1,44 @@
 import React, { useState } from "react";
-import axios from "axios";
 import Navbar from "./Navbar"; // Adjust path if needed
+import { login, logout } from "../../services/authService";
 import "./Login.css";
 
 const Login = () => {
+  // State for input fields and messages
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   // Handle login submission
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError("");
+    setSuccess("");
     try {
-      // Send login data to backend (adjust URL as needed)
-      await axios.post("https://your-api.com/login", { email, password });
-      alert("Logged in successfully!");
-    } catch (error) {
-      console.error("Login error:", error);
-      alert("Failed to log in.");
+      // Call the login service function with role set to "user"
+      const response = await login({ email, password, role: "user" });
+      setSuccess("Logged in successfully!");
+      console.log("Login response:", response);
+      // Optionally: store auth token and redirect the user
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("Failed to log in.");
     }
   };
 
-  // Handle logout by deleting user from backend
+  // Handle logout by calling the logout service function
   const handleLogout = async () => {
+    setError("");
+    setSuccess("");
     try {
-      // Send a DELETE request to remove user (adjust URL as needed)
-      await axios.delete("https://your-api.com/user");
-      alert("User deleted and logged out!");
-    } catch (error) {
-      console.error("Logout error:", error);
-      alert("Failed to log out.");
+      const response = await logout("user");
+      setSuccess("Logged out successfully!");
+      console.log("Logout response:", response);
+    } catch (err) {
+      console.error("Logout error:", err);
+      setError("Failed to log out.");
     }
   };
 
@@ -47,6 +56,8 @@ const Login = () => {
       <div className="login-page">
         <div className="login-container">
           <h1>Log in</h1>
+          {error && <div className="error">{error}</div>}
+          {success && <div className="success">{success}</div>}
           <form onSubmit={handleLogin}>
             {/* Email Field */}
             <label htmlFor="email" className="sr-only">
@@ -74,7 +85,7 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-              {/* Toggle Password Button (Eye Icon) */}
+              {/* Toggle Password Button */}
               <button
                 type="button"
                 className="toggle-password"

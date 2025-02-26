@@ -2,6 +2,34 @@ from flask_restful import Resource
 from flask import request
 from app.services.admin_auth_service import AdminAuthService
 
+class AdminSignupResource(Resource):
+    def post(self):
+        """
+        Endpoint: POST /admin/signup
+        Expects a JSON payload with:
+        {
+            "name": "Admin Name",
+            "email": "admin@example.com",
+            "password": "plaintext_password"
+        }
+        Creates a new user in the users table with role set to "admin".
+        """
+        data = request.get_json()
+        email = data.get("email")
+        password = data.get("password")
+        name = data.get("name")
+        
+        if not email or not password or not name:
+            return {"message": "Name, email, and password are required."}, 400
+
+        # Call the admin auth service to sign up an admin
+        admin_data, error = AdminAuthService.signup_admin(data)
+        if error:
+            return {"message": error}, 400
+        
+        return {"message": "Admin signup successful", "admin": admin_data}, 201
+
+
 class AdminLoginResource(Resource):
     def post(self):
         """
@@ -20,13 +48,12 @@ class AdminLoginResource(Resource):
         if not email or not password:
             return {"message": "Email and password are required."}, 400
 
-        # Call the admin authentication service to validate credentials.
         admin_data, error = AdminAuthService.login_admin(email, password)
         if error:
             return {"message": error}, 401
         
-        # If using token-based authentication, you might issue a JWT here.
         return {"message": "Login successful", "admin": admin_data}, 200
+
 
 class AdminLogoutResource(Resource):
     def post(self):

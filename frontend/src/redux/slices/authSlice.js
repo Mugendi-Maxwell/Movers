@@ -1,27 +1,27 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  user: null,   // Holds user information (e.g., id, name, email, role)
-  token: null,  // JWT token if applicable
+  user: null,  // Stores logged-in user details
+  token: null,  // JWT token
+  isAuthenticated: false,
 };
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
-    // Set user credentials after login
-    setCredentials: (state, action) => {
-      const { user, token } = action.payload;
-      state.user = user;
-      state.token = token;
+    loginSuccess: (state, action) => {
+      state.user = action.payload.user;  // Store user details
+      state.token = action.payload.token;  // Store token
+      state.isAuthenticated = true;
     },
-    // Clear credentials on logout
-    logout: (state) => {
+    logoutSuccess: (state) => {
       state.user = null;
       state.token = null;
+      state.isAuthenticated = false;
     },
   },
 });
 
-export const { setCredentials, logout } = authSlice.actions;
+export const { loginSuccess, logoutSuccess } = authSlice.actions;
 export default authSlice.reducer;

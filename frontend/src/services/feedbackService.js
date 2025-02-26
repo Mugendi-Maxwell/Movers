@@ -1,13 +1,13 @@
-import axios from 'axios';
+import axios from "axios";
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 /**
- * Retrieve all feedback entries for the user.
+ * Retrieve all feedback entries (Admin view).
  */
-export const getUserFeedback = async () => {
+export const getAllFeedbackAdmin = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/feedback`);
+    const response = await axios.get(`${API_BASE_URL}/admin/feedback`);
     return response.data;
   } catch (error) {
     throw error;
@@ -15,39 +15,12 @@ export const getUserFeedback = async () => {
 };
 
 /**
- * Create new feedback.
- * @param {Object} feedbackData - e.g. { user_id: 1, booking_id: 1, rating: 5, comments: "Great service!" }
- */
-export const createUserFeedback = async (feedbackData) => {
-  try {
-    const response = await axios.post(`${API_BASE_URL}/feedback`, feedbackData);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-/**
- * Update existing feedback.
- * @param {number} feedbackId
- * @param {Object} feedbackData - fields to update
- */
-export const updateUserFeedback = async (feedbackId, feedbackData) => {
-  try {
-    const response = await axios.put(`${API_BASE_URL}/feedback/${feedbackId}`, feedbackData);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-/**
- * Delete feedback.
+ * Retrieve details of a specific feedback entry.
  * @param {number} feedbackId
  */
-export const deleteUserFeedback = async (feedbackId) => {
+export const getFeedbackDetailsAdmin = async (feedbackId) => {
   try {
-    const response = await axios.delete(`${API_BASE_URL}/feedback/${feedbackId}`);
+    const response = await axios.get(`${API_BASE_URL}/admin/feedback/${feedbackId}`);
     return response.data;
   } catch (error) {
     throw error;

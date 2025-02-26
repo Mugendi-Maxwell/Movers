@@ -1,7 +1,8 @@
 import bcrypt
 from app.models.user import User
 from app.extensions import db
-
+from flask_jwt_extended import get_jwt_identity, get_jwt
+ 
 class AdminAuthService:
     @staticmethod
     def signup_admin(data):
@@ -36,20 +37,21 @@ class AdminAuthService:
         return new_admin.to_dict(), None
 
     @staticmethod
-    def login_admin(email, password):
+    def logout_admin():
         """
-        Authenticate an admin using the User model.
-        Args:
-            email (str): The admin's email.
-            password (str): The plaintext password.
-        Returns:
-            tuple: (admin_data, error) where admin_data is a dictionary if authentication is successful.
+        Handles admin logout by blacklisting the token and deleting the admin account.
         """
-        admin = User.query.filter_by(email=email, role='admin').first()
-        if not admin:
-            return None, "Admin not found."
+        admin_id = get_jwt_identity()  # Get admin ID from token
+        jti = get_jwt()["jti"]  # Retrieve token's unique identifier
 
-        if bcrypt.checkpw(password.encode('utf-8'), admin.password.encode('utf-8')):
-            return admin.to_dict(), None
-        else:
-            return None, "Incorrect password."
+        # Add token to blacklist
+        jwt_blacklist.add(jti)
+
+        # Find and delete the admin from the database
+        admin = Admin.query.get(admin_id)
+        if admin:
+            db.session.delete(admin)
+            db.session.commit()
+            return {"message": "Admin account deleted and logged out successfully"}, 200
+        
+        return {"message": "Admin not found"}, 404

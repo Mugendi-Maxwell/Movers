@@ -8,9 +8,8 @@ import Booking from "./pages/User/BookingForm";
 import Login from "./pages/User/Login";
 import Payment from "./pages/User/Payment";
 import Dashboard from "./pages/Admin/Dashboard";
-import inventory from "./pages/Admin/inventory";
+import Inventory from "./pages/Admin/Inventory"; // Corrected casing
 import MoveBookings from "./pages/Admin/MoveBookings";
-
 
 function App() {
   return (
@@ -22,13 +21,12 @@ function App() {
       <Route path="/profile" element={<Profile />} />
       <Route path="/booking" element={<Booking />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/Payment" element={<Payment />} />
-      <Route path="/Admin/Dashboard" element={<AdminDashboard />} />
-      <Route path="/inventory" element={<inventory/>} />
-      <Route path="/MoveBookings" element={<MoveBookings/>} />
+      <Route path="/payment" element={<Payment />} /> {/* Corrected casing */}
+      <Route path="/admin/dashboard" element={<Dashboard />} /> {/* Corrected path */}
+      <Route path="/admin/inventory" element={<Inventory />} /> {/* Corrected casing and path */}
+      <Route path="/admin/move-bookings" element={<MoveBookings />} /> {/* Standardized path */}
     </Routes> 
   );
 }
 
 export default App;
-

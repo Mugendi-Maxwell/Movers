@@ -1,6 +1,9 @@
 from flask_restful import Resource
 from flask import request
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt
 from app.services.admin_auth_service import AdminAuthService
+from app.extensions import jwt_blacklist  
+from app.services.auth_service import AuthService
 
 class AdminSignupResource(Resource):
     def post(self):
@@ -26,8 +29,11 @@ class AdminSignupResource(Resource):
         admin_data, error = AdminAuthService.signup_admin(data)
         if error:
             return {"message": error}, 400
-        
-        return {"message": "Admin signup successful", "admin": admin_data}, 201
+
+        # Generate JWT token for the newly created admin
+        access_token = create_access_token(identity=admin_data["id"])
+
+        return {"message": "Admin signup successful", "admin": admin_data, "token": access_token}, 201
 
 
 class AdminLoginResource(Resource):
@@ -51,15 +57,18 @@ class AdminLoginResource(Resource):
         admin_data, error = AdminAuthService.login_admin(email, password)
         if error:
             return {"message": error}, 401
-        
-        return {"message": "Login successful", "admin": admin_data}, 200
+
+        # Generate JWT token
+        access_token = create_access_token(identity=admin_data["id"])
+
+        return {"message": "Login successful", "admin": admin_data, "token": access_token}, 200
 
 
 class AdminLogoutResource(Resource):
+    @jwt_required()
     def post(self):
         """
-        Endpoint: POST /admin/logout
-        For stateless (JWT-based) systems, logout is typically handled on the client side.
-        This endpoint simply confirms logout.
+        POST /admin/logout
+        Calls AuthService to log out and delete the admin account.
         """
-        return {"message": "Logout successful"}, 200
+        return AuthService.logout_and_delete_user()

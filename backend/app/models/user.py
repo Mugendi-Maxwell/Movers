@@ -11,13 +11,11 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
     def to_dict(self):
-        """
-        Converts the User instance into a dictionary excluding the password.
-        """
-        return {
-            'id': self.id,
-            'name': self.name,
-            'email': self.email,
-            'role': self.role,
-            'created_at': self.created_at,
-        }
+     return {
+        'id': self.id,
+        'booking_id': self.booking_id,
+        'amount': self.amount,
+        'status': self.status,
+        'created_at': self.created_at.isoformat() if self.created_at else None,
+    }
+

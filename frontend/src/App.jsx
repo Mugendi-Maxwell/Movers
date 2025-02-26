@@ -1,9 +1,9 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Home from "./pages/User/Home";
-import Signup from "./pages/User/signup";
+import Signup from "./pages/User/Signup";
 import Feedback from "./pages/User/Feedback";
-import Profile from "./pages/User/profile";
+import Profile from "./pages/User/Profile";
 import Booking from "./pages/User/BookingForm";
 import Login from "./pages/User/Login";
 

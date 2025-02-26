@@ -2,6 +2,7 @@ from flask_restful import Resource
 from flask import request
 from app.models.user import User
 from app.extensions import db
+from flask_jwt_extended import jwt_required, get_jwt
 import bcrypt
 
 class UserSignupResource(Resource):
@@ -75,10 +76,15 @@ class UserLoginResource(Resource):
             return {"message": "Incorrect password"}, 401
 
 class UserLogoutResource(Resource):
+    @jwt_required()
     def post(self):
         """
         POST /users/logout
-        Since logout in a stateless API (e.g., JWT based) is generally handled client-side,
-        this endpoint simply returns a logout confirmation.
+        In a JWT-based authentication system, logging out means adding the token's JTI (unique identifier)
+        to a blacklist so it can no longer be used.
         """
+        # Retrieve the JWT's unique identifier (jti)
+        jti = get_jwt()["jti"]
+        # Add the token identifier to our blacklist
+        jwt_blacklist.add(jti)
         return {"message": "Logout successful"}, 200

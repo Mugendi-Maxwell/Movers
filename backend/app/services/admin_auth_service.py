@@ -72,7 +72,7 @@ class AdminAuthService:
         admin_id = get_jwt_identity()  # Get admin ID from token
         jti = get_jwt()["jti"]  # Retrieve token's unique identifier
 
-        # Add token to blacklist
+        
         jwt_blacklist.add(jti)
 
         # Find and delete the admin from the database

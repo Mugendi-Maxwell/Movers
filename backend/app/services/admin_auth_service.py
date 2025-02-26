@@ -1,8 +1,8 @@
 import bcrypt
-from app.models.user import User
-from app.extensions import db
-from flask_jwt_extended import get_jwt_identity, get_jwt
- 
+from app.models.user import User  # No separate Admin model; using User model
+from app.extensions import db, jwt_blacklist
+from flask_jwt_extended import create_access_token, get_jwt_identity, get_jwt
+
 class AdminAuthService:
     @staticmethod
     def signup_admin(data):
@@ -30,11 +30,39 @@ class AdminAuthService:
             name=name,
             email=email,
             password=hashed,
-            role='admin'
+            role='admin'  # Set role as 'admin'
         )
         db.session.add(new_admin)
         db.session.commit()
         return new_admin.to_dict(), None
+
+    @staticmethod
+    def login_admin(data):
+        """
+        Handles admin login by verifying credentials and returning a JWT token.
+        Args:
+            data (dict): Contains 'email' and 'password'.
+        Returns:
+            tuple: (response_data, error)
+        """
+        email = data.get('email')
+        password = data.get('password')
+
+        if not email or not password:
+            return None, "Email and password are required."
+
+        # Check if the user exists and has the 'admin' role
+        admin = User.query.filter_by(email=email, role="admin").first()
+        if not admin:
+            return None, "Admin not found."
+
+        # Verify the password
+        if bcrypt.checkpw(password.encode('utf-8'), admin.password.encode('utf-8')):
+            # Generate JWT token
+            access_token = create_access_token(identity=admin.id)
+            return {"message": "Login successful", "admin": admin.to_dict(), "token": access_token}, None
+        else:
+            return None, "Incorrect password"
 
     @staticmethod
     def logout_admin():
@@ -48,10 +76,10 @@ class AdminAuthService:
         jwt_blacklist.add(jti)
 
         # Find and delete the admin from the database
-        admin = Admin.query.get(admin_id)
+        admin = User.query.filter_by(id=admin_id, role="admin").first()  # Check role explicitly
         if admin:
             db.session.delete(admin)
             db.session.commit()
             return {"message": "Admin account deleted and logged out successfully"}, 200
         
-        return {"message": "Admin not found"}, 404
+        return {"message": "Admin not found or already deleted"}, 404

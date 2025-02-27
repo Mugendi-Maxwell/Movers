@@ -53,76 +53,128 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-4">Admin Dashboard</h1>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        
-        {/* Manage Bookings */}
-        <div className="bg-white shadow-lg rounded-xl p-4">
-          <h2 className="text-xl font-semibold flex items-center gap-2">
-            <FaCalendarAlt /> Total Bookings
-          </h2>
-          <p className="text-2xl font-bold">{bookings.length}</p>
-          <Link to="/admin/move-bookings">
-            <button className="mt-3 bg-blue-500 text-white px-4 py-2 rounded">
-              Manage Bookings
-            </button>
-          </Link>
-        </div>
+    <>
+      <style>{`
+        .dashboard-container {
+          padding: 1.5rem;
+        }
+        .dashboard-heading {
+          font-size: 2rem;
+          font-weight: bold;
+          margin-bottom: 1rem;
+          text-align: center;
+        }
+        .dashboard-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
+        }
+        @media (min-width: 768px) {
+          .dashboard-grid {
+            grid-template-columns: repeat(3, 1fr);
+          }
+        }
+        .card {
+          background-color: #fff;
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                      0 4px 6px -2px rgba(0, 0, 0, 0.05);
+          border-radius: 0.75rem;
+          padding: 1rem;
+          text-align: center;
+        }
+        .card-heading {
+          font-size: 1.25rem;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          margin-bottom: 0.5rem;
+        }
+        .card-number {
+          font-size: 1.5rem;
+          font-weight: bold;
+          margin-bottom: 0.75rem;
+        }
+        .btn {
+          margin-top: 0.75rem;
+          background-color: #3b82f6;
+          color: #fff;
+          padding: 0.5rem 1rem;
+          border: none;
+          border-radius: 0.375rem;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+        }
+        .btn:hover {
+          background-color: #2563eb;
+        }
+        .back-link {
+          color: #3b82f6;
+          margin-bottom: 1rem;
+          display: inline-block;
+        }
+      `}</style>
 
-        {/* View Payments */}
-        <div className="bg-white shadow-lg rounded-xl p-4">
-          <h2 className="text-xl font-semibold flex items-center gap-2">
-            <FaMoneyBillWave /> Total Payments
-          </h2>
-          <p className="text-2xl font-bold">{payments.length}</p>
-          <Link to="/admin/payments">
-            <button className="mt-3 bg-blue-500 text-white px-4 py-2 rounded">
-              View Payments
-            </button>
-          </Link>
-        </div>
+      <div className="dashboard-container">
+        <h1 className="dashboard-heading">Admin Dashboard</h1>
+        <div className="dashboard-grid">
+          {/* Manage Bookings */}
+          <div className="card">
+            <div className="card-heading">
+              <FaCalendarAlt /> Total Bookings
+            </div>
+            <div className="card-number">{bookings.length}</div>
+            <Link to="/admin/move-bookings">
+              <button className="btn">Manage Bookings</button>
+            </Link>
+          </div>
 
-        {/* View Feedbacks */}
-        <div className="bg-white shadow-lg rounded-xl p-4">
-          <h2 className="text-xl font-semibold flex items-center gap-2">
-            <FaCommentDots /> Total Feedbacks
-          </h2>
-          <p className="text-2xl font-bold">{feedback.length}</p>
-          <Link to="/admin/feedback">
-            <button className="mt-3 bg-blue-500 text-white px-4 py-2 rounded">
-              View Feedbacks
-            </button>
-          </Link>
-        </div>
+          {/* View Payments */}
+          <div className="card">
+            <div className="card-heading">
+              <FaMoneyBillWave /> Total Payments
+            </div>
+            <div className="card-number">{payments.length}</div>
+            <Link to="/admin/payments">
+              <button className="btn">View Payments</button>
+            </Link>
+          </div>
 
-        {/* Inventory */}
-        <div className="bg-white shadow-lg rounded-xl p-4">
-          <h2 className="text-xl font-semibold flex items-center gap-2">
-            <FaBoxes /> Inventory
-          </h2>
-          <p className="text-2xl font-bold">{inventory.length}</p>
-          <Link to="/admin/inventory">
-            <button className="mt-3 bg-blue-500 text-white px-4 py-2 rounded">
-              View Inventory
-            </button>
-          </Link>
-        </div>
+          {/* View Feedbacks */}
+          <div className="card">
+            <div className="card-heading">
+              <FaCommentDots /> Total Feedbacks
+            </div>
+            <div className="card-number">{feedback.length}</div>
+            <Link to="/admin/feedback">
+              <button className="btn">View Feedbacks</button>
+            </Link>
+          </div>
 
-        {/* Login Link */}
-        <div className="bg-white shadow-lg rounded-xl p-4">
-          <h2 className="text-xl font-semibold flex items-center gap-2">
-            <FaSignInAlt /> Login
-          </h2>
-          <Link to="/login">
-            <button className="mt-3 bg-blue-500 text-white px-4 py-2 rounded">
-              Go to Login
-            </button>
-          </Link>
+          {/* Inventory */}
+          <div className="card">
+            <div className="card-heading">
+              <FaBoxes /> Inventory
+            </div>
+            <div className="card-number">{inventory.length}</div>
+            <Link to="/admin/inventory">
+              <button className="btn">View Inventory</button>
+            </Link>
+          </div>
+
+          {/* Login Link */}
+          <div className="card">
+            <div className="card-heading">
+              <FaSignInAlt /> Login
+            </div>
+            <Link to="/login">
+              <button className="btn">Go to Login</button>
+            </Link>
+          </div>
         </div>
-        
       </div>
-    </div>
+    </>
   );
 };
 

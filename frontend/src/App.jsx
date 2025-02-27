@@ -10,6 +10,7 @@ import Payment from "./pages/User/Payment";
 import Dashboard from "./pages/Admin/Dashboard";
 import Inventory from "./pages/Admin/Inventory"; // Corrected casing
 import MoveBookings from "./pages/Admin/MoveBookings";
+import AdminFeedback from "./pages/Admin/AdminFeedback";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
       <Route path="/admin/dashboard" element={<Dashboard />} /> {/* Corrected path */}
       <Route path="/admin/inventory" element={<Inventory />} /> {/* Corrected casing and path */}
       <Route path="/admin/move-bookings" element={<MoveBookings />} /> {/* Standardized path */}
+      <Route path="/admin/feedback" element={<AdminFeedback />} />
     </Routes> 
   );
 }

@@ -40,7 +40,7 @@ const Dashboard = () => {
         console.error("Error fetching feedback:", error);
       }
 
-      // Uncomment and update the following if you have an inventory service:
+      
       // try {
       //   const inventoryData = await getAllInventoryAdmin();
       //   setInventory(inventoryData);

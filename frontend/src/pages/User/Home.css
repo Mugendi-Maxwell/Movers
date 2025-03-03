@@ -8,7 +8,8 @@ html, body {
   width: 100%;
   height: 100%;
   font-family: 'Poppins', Arial, sans-serif;
-  background: #f8f9fa;
+  background: #222222; /* Dark mode background */
+  color: #ffffff; /* White text */
 }
 
 /* Home Container: full viewport height */
@@ -21,21 +22,22 @@ html, body {
 
 /* Top Header with Company Title */
 .top-header {
-  background: #fff;
+  background: #333333; /* Dark gray header */
   padding: 20px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 191, 255, 0.2); /* Neon glow */
 }
 .company-title {
   margin: 0;
   font-size: 24px;
   font-weight: 600;
-  color: #4a4a4a;
+  color: #ffffff; /* White text */
   text-align: center;
 }
 
 /* Navigation Bar with Icons stretched across width */
 .icon-nav {
-  background: #f8f9fa;
+  background: #333333; /* Dark gray */
+  border-top: 1px solid #444444; /* Subtle separation */
 }
 .icon-nav ul {
   display: flex;
@@ -44,21 +46,27 @@ html, body {
   list-style: none;
 }
 .icon-nav li {
-  flex: 1;               /* Each icon takes equal space */
+  flex: 1; /* Each icon takes equal space */
   text-align: center;
   padding: 15px 0;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 .icon-nav li:hover {
-  background: #e0e0e0;
+  background: #444444; /* Slightly lighter gray */
+  box-shadow: 0 0 10px rgba(0, 191, 255, 0.4); /* Neon blue glow */
 }
 
-/* Icon styling (Heroicons are SVGs) */
+/* Icon styling */
 .icon {
   width: 28px;
   height: 28px;
-  color: black;
+  color: #00BFFF; /* Neon blue */
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+.icon:hover {
+  color: #1E90FF; /* Lighter neon blue */
+  transform: scale(1.1);
 }
 
 /* Main Content Area */
@@ -66,6 +74,7 @@ html, body {
   flex: 1;
   padding: 20px;
   overflow-y: auto;
+  background: #222222; /* Consistent dark mode */
 }
 
 /* Responsive adjustments */

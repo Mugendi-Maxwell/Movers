@@ -39,144 +39,135 @@ const Dashboard = () => {
       } catch (error) {
         console.error("Error fetching feedback:", error);
       }
-
-      // Uncomment and update the following if you have an inventory service:
-      // try {
-      //   const inventoryData = await getAllInventoryAdmin()
-      //   setInventory(inventoryData);
-      // } catch (error) {
-      //   console.error("Error fetching inventory:", error);
-      // }
     };
 
     fetchData();
   }, []);
 
   return (
-    <>
-      <style>{`
-        .dashboard-container {
-          padding: 1.5rem;
-        }
-        .dashboard-heading {
-          font-size: 2rem;
-          font-weight: bold;
-          margin-bottom: 1rem;
-          text-align: center;
-        }
-        .dashboard-grid {
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 1.5rem;
-        }
-        @media (min-width: 768px) {
-          .dashboard-grid {
-            grid-template-columns: repeat(3, 1fr);
-          }
-        }
-        .card {
-          background-color: #fff;
-          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-                      0 4px 6px -2px rgba(0, 0, 0, 0.05);
-          border-radius: 0.75rem;
-          padding: 1rem;
-          text-align: center;
-        }
-        .card-heading {
-          font-size: 1.25rem;
-          font-weight: 600;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.5rem;
-          margin-bottom: 0.5rem;
-        }
-        .card-number {
-          font-size: 1.5rem;
-          font-weight: bold;
-          margin-bottom: 0.75rem;
-        }
-        .btn {
-          margin-top: 0.75rem;
-          background-color: #3b82f6;
-          color: #fff;
-          padding: 0.5rem 1rem;
-          border: none;
-          border-radius: 0.375rem;
-          cursor: pointer;
-          transition: background-color 0.3s ease;
-        }
-        .btn:hover {
-          background-color: #2563eb;
-        }
-        .back-link {
-          color: #3b82f6;
-          margin-bottom: 1rem;
-          display: inline-block;
-        }
-      `}</style>
-
-      <div className="dashboard-container">
-        <h1 className="dashboard-heading">Admin Dashboard</h1>
-        <div className="dashboard-grid">
-          {/* Manage Bookings */}
-          <div className="card">
-            <div className="card-heading">
-              <FaCalendarAlt /> Total Bookings
-            </div>
-            <div className="card-number">{bookings.length}</div>
-            <Link to="/admin/move-bookings">
-              <button className="btn">Manage Bookings</button>
-            </Link>
-          </div>
-
-          {/* View Payments */}
-          <div className="card">
-            <div className="card-heading">
-              <FaMoneyBillWave /> Total Payments
-            </div>
-            <div className="card-number">{payments.length}</div>
-            <Link to="/admin/payments">
-              <button className="btn">View Payments</button>
-            </Link>
-          </div>
-
-          {/* View Feedbacks */}
-          <div className="card">
-            <div className="card-heading">
-              <FaCommentDots /> Total Feedbacks
-            </div>
-            <div className="card-number">{feedback.length}</div>
-            <Link to="/admin/feedback">
-              <button className="btn">View Feedbacks</button>
-            </Link>
-          </div>
-
-          {/* Inventory */}
-          <div className="card">
-            <div className="card-heading">
-              <FaBoxes /> Inventory
-            </div>
-            <div className="card-number">{inventory.length}</div>
-            <Link to="/admin/inventory">
-              <button className="btn">View Inventory</button>
-            </Link>
-          </div>
-
-          {/* Login Link */}
-          <div className="card">
-            <div className="card-heading">
-              <FaSignInAlt /> Login
-            </div>
-            <Link to="/login">
-              <button className="btn">Go to Login</button>
-            </Link>
-          </div>
+    <div style={styles.container}>
+      <h1 style={styles.title}>Admin Dashboard</h1>
+      <div style={styles.grid}>
+        
+        {/* Manage Bookings */}
+        <div style={styles.card}>
+          <h2 style={styles.cardTitle}>
+            <FaCalendarAlt /> Total Bookings
+          </h2>
+          <p style={styles.cardNumber}>{bookings.length}</p>
+          <Link to="/admin/move-bookings">
+            <button style={styles.button}>Manage Bookings</button>
+          </Link>
         </div>
+
+        {/* View Payments */}
+        <div style={styles.card}>
+          <h2 style={styles.cardTitle}>
+            <FaMoneyBillWave /> Total Payments
+          </h2>
+          <p style={styles.cardNumber}>{payments.length}</p>
+          <Link to="/admin/payments">
+            <button style={styles.button}>View Payments</button>
+          </Link>
+        </div>
+
+        {/* View Feedbacks */}
+        <div style={styles.card}>
+          <h2 style={styles.cardTitle}>
+            <FaCommentDots /> Total Feedbacks
+          </h2>
+          <p style={styles.cardNumber}>{feedback.length}</p>
+          <Link to="/admin/feedback">
+            <button style={styles.button}>View Feedbacks</button>
+          </Link>
+        </div>
+
+        {/* Inventory */}
+        <div style={styles.card}>
+          <h2 style={styles.cardTitle}>
+            <FaBoxes /> Inventory
+          </h2>
+          <p style={styles.cardNumber}>{inventory.length}</p>
+          <Link to="/admin/inventory">
+            <button style={styles.button}>View Inventory</button>
+          </Link>
+        </div>
+
+        {/* Login Link */}
+        <div style={styles.card}>
+          <h2 style={styles.cardTitle}>
+            <FaSignInAlt /> Login
+          </h2>
+          <Link to="/login">
+            <button style={styles.button}>Go to Login</button>
+          </Link>
+        </div>
+
       </div>
-    </>
+    </div>
   );
 };
 
-export default Dashboard;
+// CSS-in-JS styles
+const styles = {
+  container: {
+    minHeight: "100vh",
+    backgroundColor: "#000000", // Black
+    padding: "20px",
+    textAlign: "center",
+  },
+  title: {
+    fontSize: "36px",
+    fontWeight: "bold",
+    color: "#00BFFF", // Neon Blue
+    marginBottom: "20px",
+  },
+  grid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+    gap: "20px",
+    justifyContent: "center",
+  },
+  card: {
+    backgroundColor: "#222222", // Charcoal
+    color: "#FFFFFF", // White text
+    padding: "20px",
+    borderRadius: "10px",
+    boxShadow: "2px 2px 10px rgba(0, 191, 255, 0.5)", // Neon Blue Glow
+    textAlign: "center",
+  },
+  cardTitle: {
+    fontSize: "20px",
+    fontWeight: "bold",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "10px",
+  },
+  cardNumber: {
+    fontSize: "30px",
+    fontWeight: "bold",
+    margin: "10px 0",
+    color: "#00BFFF", // Neon Blue
+  },
+  button: {
+    backgroundColor: "#00BFFF", // Neon Blue
+    color: "#000000", // Black text
+    padding: "10px 15px",
+    fontSize: "16px",
+    fontWeight: "bold",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+    transition: "background 0.3s, transform 0.2s",
+  },
+  buttonHover: {
+    backgroundColor: "#009ACD", // Slightly darker blue
+    transform: "scale(1.05)",
+  },
+};
 
+// Button hover effect
+styles.button[":hover"] = styles.buttonHover;
+
+export default Dashboard;

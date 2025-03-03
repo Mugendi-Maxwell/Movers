@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 #!/home/abdi/Desktop/phase5-project/Movers/backend/venv/bin/python3
+=======
+#!/home/audreymary/development/phase-5/Movers/backend/venv/bin/python3
+>>>>>>> 6ed8d213dd98fe841f673a7990689641fd6b0edf
 # -*- coding: utf-8 -*-
 import re
 import sys

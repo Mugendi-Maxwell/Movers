@@ -15,22 +15,15 @@ import "./Profile.css";
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const Profile = () => {
-  // State to store the fetched user details
   const [user, setUser] = useState(null);
-  // Email input to fetch the profile
   const [inputEmail, setInputEmail] = useState("");
   const [userError, setUserError] = useState("");
   const [loadingUser, setLoadingUser] = useState(false);
-
-  // For editing profile details (only name and email)
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({ name: "", email: "" });
-
-  // Dynamic content for sidebar selection
   const [selectedItem, setSelectedItem] = useState(null);
   const [content, setContent] = useState(null);
 
-  // Fetch user data by email from the /users endpoint
   const fetchUserByEmail = async () => {
     if (!inputEmail) {
       setUserError("Please enter your email.");
@@ -38,10 +31,7 @@ const Profile = () => {
     }
     setLoadingUser(true);
     try {
-      const res = await axios.get(`${API_BASE_URL}/users`, {
-        headers: { "Content-Type": "application/json" },
-      });
-      // Assume /users returns an array of user objects
+      const res = await axios.get(`${API_BASE_URL}/users`);
       const matchedUser = res.data.find(
         (u) => u.email.toLowerCase() === inputEmail.toLowerCase()
       );
@@ -60,56 +50,41 @@ const Profile = () => {
     }
   };
 
-  // Handle input changes for editing profile details
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Save updated profile details (update localStorage for now)
   const handleUpdate = () => {
     setUser(formData);
     localStorage.setItem("user", JSON.stringify(formData));
     setEditing(false);
-    console.log("Profile updated:", formData);
   };
 
-  // Fetch dynamic content based on sidebar sub-item selection using user.id
   useEffect(() => {
     if (!user || !selectedItem) {
       setContent(null);
       return;
     }
 
-    // For booking details: "date", "price", "inventory"
-    if (["date", "price", "inventory"].includes(selectedItem)) {
-      axios
-        .get(`${API_BASE_URL}/bookings`, {
+    const fetchData = async () => {
+      try {
+        let endpoint =
+          selectedItem === "comment" || selectedItem === "rating"
+            ? "feedback"
+            : "bookings";
+
+        const res = await axios.get(`${API_BASE_URL}/${endpoint}`, {
           params: { user_id: user.id },
-        })
-        .then((res) => {
-          setContent(res.data);
-        })
-        .catch((err) => {
-          console.error("Error fetching booking details:", err);
-          setContent({ error: "Error fetching booking details." });
         });
-    }
-    // For feedback details: "comment", "rating"
-    else if (["comment", "rating"].includes(selectedItem)) {
-      axios
-        .get(`${API_BASE_URL}/feedback`, {
-          params: { user_id: user.id },
-        })
-        .then((res) => {
-          setContent(res.data);
-        })
-        .catch((err) => {
-          console.error("Error fetching feedback details:", err);
-          setContent({ error: "Error fetching feedback details." });
-        });
-    } else {
-      setContent(null);
-    }
+
+        setContent(res.data);
+      } catch (err) {
+        console.error(`Error fetching ${selectedItem} data:`, err);
+        setContent({ error: `Error fetching ${selectedItem} data.` });
+      }
+    };
+
+    fetchData();
   }, [selectedItem, user]);
 
   if (loadingUser) {
@@ -123,7 +98,6 @@ const Profile = () => {
     );
   }
 
-  // If no user is loaded, show the email input form to fetch profile details.
   if (!user) {
     return (
       <div>
@@ -150,7 +124,6 @@ const Profile = () => {
     <div>
       <Navbar />
       <div className="profile-container">
-        {/* Left Sidebar */}
         <aside className="profile-sidebar">
           <h2>My Dashboard</h2>
           <ul>
@@ -203,7 +176,6 @@ const Profile = () => {
           </ul>
         </aside>
 
-        {/* Main Content */}
         <main className="profile-main">
           <div className={`profile-info ${editing ? "editing" : ""}`}>
             <div className="avatar-icon-wrapper">
@@ -225,9 +197,7 @@ const Profile = () => {
                   onChange={handleChange}
                   placeholder="Enter your email"
                 />
-                <button onClick={handleUpdate}>
-                  Confirm change and submit
-                </button>
+                <button onClick={handleUpdate}>Confirm change and submit</button>
               </>
             ) : (
               <>
@@ -236,26 +206,6 @@ const Profile = () => {
                 <button onClick={() => setEditing(true)}>Change Details</button>
               </>
             )}
-
-            {/* Dynamic Content Area */}
-            <div className="dynamic-content">
-              {selectedItem ? (
-                content ? (
-                  content.error ? (
-                    <p className="error-text">{content.error}</p>
-                  ) : (
-                    <>
-                      <h4>Data for: {selectedItem}</h4>
-                      <pre>{JSON.stringify(content, null, 2)}</pre>
-                    </>
-                  )
-                ) : (
-                  <p>Loading...</p>
-                )
-              ) : (
-                <p>Select a sub-item on the left to see details.</p>
-              )}
-            </div>
           </div>
         </main>
       </div>

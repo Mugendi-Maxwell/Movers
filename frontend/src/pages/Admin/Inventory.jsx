@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { getInventoryItems, createInventoryItem } from "../../services/inventoryService";
-// Adjust CSS file as needed
 
 const Inventory = () => {
   const [items, setItems] = useState([]);
@@ -35,21 +34,21 @@ const Inventory = () => {
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold mb-4">Inventory Management</h1>
-      {error && <div className="error">{error}</div>}
-      <div className="mb-4">
+      {error && <div className="text-red-500 font-bold mb-4">{error}</div>}
+      <div className="mb-4 flex gap-2">
         <input
           type="text"
           placeholder="Move Type"
           value={newItem.move_type}
           onChange={(e) => setNewItem({ ...newItem, move_type: e.target.value })}
-          className="border p-2 mr-2"
+          className="border p-2 rounded"
         />
         <input
           type="number"
           placeholder="Base Price"
           value={newItem.base_price}
           onChange={(e) => setNewItem({ ...newItem, base_price: Number(e.target.value) })}
-          className="border p-2 mr-2"
+          className="border p-2 rounded"
         />
         <button onClick={addItem} className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
           Add Item

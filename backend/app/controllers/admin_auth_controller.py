@@ -3,7 +3,7 @@ from flask import request
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt
 from app.services.admin_auth_service import AdminAuthService
 from app.extensions import jwt_blacklist  
-from app.services.auth_service import AuthService
+from app.services.auth_service import logout_user
 
 class AdminSignupResource(Resource):
     def post(self):
@@ -68,7 +68,8 @@ class AdminLogoutResource(Resource):
     @jwt_required()
     def post(self):
         """
-        POST /admin/logout
-        Calls AuthService to log out and delete the admin account.
+        POST /users/logout
+        Logs out the user by revoking the token or performing logout-related actions.
+        Does NOT delete the user.
         """
-        return AuthService.logout_and_delete_user()
+        return logout_user()

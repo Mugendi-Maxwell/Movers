@@ -1,21 +1,30 @@
 from app.models.payment import Payment
 from app.models.booking import Booking
+from app.models.user import User
 from app.extensions import db
-from flask_jwt_extended import get_jwt_identity
 
 class PaymentService:
     @staticmethod
-    def get_all_payments():
+    def get_all_payments(email):
         """
-        Retrieve all payments for the authenticated user.
+        Retrieve all payments for the user with the given email.
+        Returns a list of payments in the format:
+          {
+              'id': <int>,
+              'booking_id': <int>,
+              'amount': <float>,
+              'status': <string>,
+              'created_at': <ISO formatted datetime string or None>
+          }
         """
-        user_id = get_jwt_identity()  # ✅ Extract user ID from JWT
+        user = User.query.filter_by(email=email).first()
+        if not user:
+            return {"message": "User not found"}, 404
 
-        # Fetch only payments belonging to the user's bookings
         payments = (
             db.session.query(Payment)
             .join(Booking)
-            .filter(Booking.user_id == user_id)
+            .filter(Booking.user_id == user.id)
             .all()
         )
         return [payment.to_dict() for payment in payments], 200
@@ -24,70 +33,99 @@ class PaymentService:
     def create_payment(data):
         """
         Create a new payment using the provided data.
-        Args:
-            data (dict): A dictionary with keys 'booking_id' and 'amount'.
-        Returns:
-            A dictionary representing the newly created payment.
+        Expected keys in data:
+            - booking_id: int
+            - amount: float
+            - payment_method: string (if required)
+            - email: string (to identify the user)
+        The Payment model eventually returns data in the format:
+            {
+                'id': self.id,
+                'booking_id': self.booking_id,
+                'amount': self.amount,
+                'status': self.status,
+                'created_at': self.created_at.isoformat() if self.created_at else None,
+            }
         """
-        user_id = get_jwt_identity()  # ✅ Extract user ID from JWT
+        email = data.get("email")
+        if not email:
+            return {"message": "Email is required"}, 400
+
+        user = User.query.filter_by(email=email).first()
+        if not user:
+            return {"message": "User not found"}, 404
+
         booking_id = data.get("booking_id")
         amount = data.get("amount")
 
-        # Ensure the booking exists and belongs to the user
-        booking = Booking.query.filter_by(id=booking_id, user_id=user_id).first()
+        # Ensure the booking exists and belongs to the user.
+        booking = Booking.query.filter_by(id=booking_id, user_id=user.id).first()
         if not booking:
             return {"message": "Booking not found or unauthorized"}, 404
 
         new_payment = Payment(
             booking_id=booking_id,
             amount=amount,
-            status=data.get("status", "pending"),  # Default status: pending
+            status=data.get("status", "pending")
         )
 
         try:
             db.session.add(new_payment)
             db.session.commit()
+            print("Payment created with ID:", new_payment.id)
             return new_payment.to_dict(), 201
         except Exception as e:
             db.session.rollback()
+            print("Error creating payment:", e)
             return {"message": str(e)}, 500
 
     @staticmethod
-    def get_payment_by_id(payment_id):
+    def get_payment_by_id(payment_id, email):
         """
-        Retrieve a specific payment by its ID (only if the user owns it).
+        Retrieve a specific payment by its ID, ensuring that it belongs to the user
+        identified by the provided email.
         """
-        user_id = get_jwt_identity()
+        user = User.query.filter_by(email=email).first()
+        if not user:
+            return {"message": "User not found"}, 404
 
         payment = (
             db.session.query(Payment)
             .join(Booking)
-            .filter(Payment.id == payment_id, Booking.user_id == user_id)
+            .filter(Payment.id == payment_id, Booking.user_id == user.id)
             .first()
         )
-
         if not payment:
             return {"message": "Payment not found or unauthorized"}, 404
         return payment.to_dict(), 200
 
     @staticmethod
-    def update_payment(payment_id, data):
+    def update_payment(payment_id, data, email):
         """
-        Update an existing payment record (only if the user owns it).
+        Update an existing payment record (only if it belongs to the user identified by email).
+        Allowed keys for update: 'amount', 'status'.
+        Returns the updated payment in the format:
+          {
+              'id': <int>,
+              'booking_id': <int>,
+              'amount': <float>,
+              'status': <string>,
+              'created_at': <ISO formatted datetime string or None>
+          }
         """
-        user_id = get_jwt_identity()
+        user = User.query.filter_by(email=email).first()
+        if not user:
+            return {"message": "User not found"}, 404
 
         payment = (
             db.session.query(Payment)
             .join(Booking)
-            .filter(Payment.id == payment_id, Booking.user_id == user_id)
+            .filter(Payment.id == payment_id, Booking.user_id == user.id)
             .first()
         )
-
         if not payment:
             return {"message": "Payment not found or unauthorized"}, 404
 
-        # Update fields if provided
         if "amount" in data:
             payment.amount = data["amount"]
         if "status" in data:
@@ -101,19 +139,21 @@ class PaymentService:
             return {"message": str(e)}, 500
 
     @staticmethod
-    def delete_payment(payment_id):
+    def delete_payment(payment_id, email):
         """
-        Delete a payment record (only if the user owns it).
+        Delete a payment record (only if it belongs to the user identified by email).
+        Returns a success message if deletion is successful.
         """
-        user_id = get_jwt_identity()
+        user = User.query.filter_by(email=email).first()
+        if not user:
+            return {"message": "User not found"}, 404
 
         payment = (
             db.session.query(Payment)
             .join(Booking)
-            .filter(Payment.id == payment_id, Booking.user_id == user_id)
+            .filter(Payment.id == payment_id, Booking.user_id == user.id)
             .first()
         )
-
         if not payment:
             return {"message": "Payment not found or unauthorized"}, 404
 

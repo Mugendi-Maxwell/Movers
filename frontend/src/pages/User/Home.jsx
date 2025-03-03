@@ -7,7 +7,7 @@ import {
   ChatBubbleBottomCenterIcon,
   ArrowRightOnRectangleIcon,
 } from '@heroicons/react/24/outline';
-import Signup from './Signup'; 
+import Signup from './Signup';
 import './Home.css';
 
 const Home = () => {

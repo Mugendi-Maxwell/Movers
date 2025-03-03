@@ -11,10 +11,11 @@ class Payment(db.Model):
     booking = db.relationship('Booking', backref=db.backref('payments', lazy=True))
 
     def to_dict(self):
-        return {
-            'id': self.id,
-            'booking_id': self.booking_id,
-            'amount': self.amount,
-            'status': self.status,
-            'created_at': self.created_at,
-        }
+     return {
+        'id': self.id,
+        'booking_id': self.booking_id,
+        'amount': self.amount,
+        'status': self.status,
+        'created_at': self.created_at.isoformat() if self.created_at else None,
+    }
+

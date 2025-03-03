@@ -11,3 +11,5 @@ ye
 __pycache__/
 node_modules/
 .history/
+__pycache__/
+*.pyc

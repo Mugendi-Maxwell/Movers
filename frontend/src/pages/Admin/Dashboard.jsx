@@ -39,85 +39,67 @@ const Dashboard = () => {
       } catch (error) {
         console.error("Error fetching feedback:", error);
       }
-
-      // Uncomment and update the following if you have an inventory service:
-      // try {
-      //   const inventoryData = await getAllInventoryAdmin();
-      //   setInventory(inventoryData);
-      // } catch (error) {
-      //   console.error("Error fetching inventory:", error);
-      // }
     };
 
     fetchData();
   }, []);
 
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-4">Admin Dashboard</h1>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div style={styles.container}>
+      <h1 style={styles.title}>Admin Dashboard</h1>
+      <div style={styles.grid}>
         
         {/* Manage Bookings */}
-        <div className="bg-white shadow-lg rounded-xl p-4">
-          <h2 className="text-xl font-semibold flex items-center gap-2">
+        <div style={styles.card}>
+          <h2 style={styles.cardTitle}>
             <FaCalendarAlt /> Total Bookings
           </h2>
-          <p className="text-2xl font-bold">{bookings.length}</p>
+          <p style={styles.cardNumber}>{bookings.length}</p>
           <Link to="/admin/move-bookings">
-            <button className="mt-3 bg-blue-500 text-white px-4 py-2 rounded">
-              Manage Bookings
-            </button>
+            <button style={styles.button}>Manage Bookings</button>
           </Link>
         </div>
 
         {/* View Payments */}
-        <div className="bg-white shadow-lg rounded-xl p-4">
-          <h2 className="text-xl font-semibold flex items-center gap-2">
+        <div style={styles.card}>
+          <h2 style={styles.cardTitle}>
             <FaMoneyBillWave /> Total Payments
           </h2>
-          <p className="text-2xl font-bold">{payments.length}</p>
+          <p style={styles.cardNumber}>{payments.length}</p>
           <Link to="/admin/payments">
-            <button className="mt-3 bg-blue-500 text-white px-4 py-2 rounded">
-              View Payments
-            </button>
+            <button style={styles.button}>View Payments</button>
           </Link>
         </div>
 
         {/* View Feedbacks */}
-        <div className="bg-white shadow-lg rounded-xl p-4">
-          <h2 className="text-xl font-semibold flex items-center gap-2">
+        <div style={styles.card}>
+          <h2 style={styles.cardTitle}>
             <FaCommentDots /> Total Feedbacks
           </h2>
-          <p className="text-2xl font-bold">{feedback.length}</p>
+          <p style={styles.cardNumber}>{feedback.length}</p>
           <Link to="/admin/feedback">
-            <button className="mt-3 bg-blue-500 text-white px-4 py-2 rounded">
-              View Feedbacks
-            </button>
+            <button style={styles.button}>View Feedbacks</button>
           </Link>
         </div>
 
         {/* Inventory */}
-        <div className="bg-white shadow-lg rounded-xl p-4">
-          <h2 className="text-xl font-semibold flex items-center gap-2">
+        <div style={styles.card}>
+          <h2 style={styles.cardTitle}>
             <FaBoxes /> Inventory
           </h2>
-          <p className="text-2xl font-bold">{inventory.length}</p>
+          <p style={styles.cardNumber}>{inventory.length}</p>
           <Link to="/admin/inventory">
-            <button className="mt-3 bg-blue-500 text-white px-4 py-2 rounded">
-              View Inventory
-            </button>
+            <button style={styles.button}>View Inventory</button>
           </Link>
         </div>
 
         {/* Login Link */}
-        <div className="bg-white shadow-lg rounded-xl p-4">
-          <h2 className="text-xl font-semibold flex items-center gap-2">
+        <div style={styles.card}>
+          <h2 style={styles.cardTitle}>
             <FaSignInAlt /> Login
           </h2>
           <Link to="/login">
-            <button className="mt-3 bg-blue-500 text-white px-4 py-2 rounded">
-              Go to Login
-            </button>
+            <button style={styles.button}>Go to Login</button>
           </Link>
         </div>
         
@@ -125,5 +107,67 @@ const Dashboard = () => {
     </div>
   );
 };
+
+// CSS-in-JS styles
+const styles = {
+  container: {
+    minHeight: "100vh",
+    backgroundColor: "#000000", // Black
+    padding: "20px",
+    textAlign: "center",
+  },
+  title: {
+    fontSize: "36px",
+    fontWeight: "bold",
+    color: "#00BFFF", // Neon Blue
+    marginBottom: "20px",
+  },
+  grid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+    gap: "20px",
+    justifyContent: "center",
+  },
+  card: {
+    backgroundColor: "#222222", // Charcoal
+    color: "#FFFFFF", // White text
+    padding: "20px",
+    borderRadius: "10px",
+    boxShadow: "2px 2px 10px rgba(0, 191, 255, 0.5)", // Neon Blue Glow
+    textAlign: "center",
+  },
+  cardTitle: {
+    fontSize: "20px",
+    fontWeight: "bold",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "10px",
+  },
+  cardNumber: {
+    fontSize: "30px",
+    fontWeight: "bold",
+    margin: "10px 0",
+    color: "#00BFFF", // Neon Blue
+  },
+  button: {
+    backgroundColor: "#00BFFF", // Neon Blue
+    color: "#000000", // Black text
+    padding: "10px 15px",
+    fontSize: "16px",
+    fontWeight: "bold",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+    transition: "background 0.3s, transform 0.2s",
+  },
+  buttonHover: {
+    backgroundColor: "#009ACD", // Slightly darker blue
+    transform: "scale(1.05)",
+  },
+};
+
+// Button hover effect
+styles.button[":hover"] = styles.buttonHover;
 
 export default Dashboard;

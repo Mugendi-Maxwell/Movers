@@ -23,7 +23,12 @@ const getAuthToken = () => localStorage.getItem("token");
 /**
  * Sign up a new user or admin.
  * @param {Object} signupData - Object containing user details.
- * @returns {Object} Response data from the API.
+ *   Expected keys:
+ *     - name: string
+ *     - email: string
+ *     - password: string
+ *     - role: "user" or "admin"
+ * @returns {Object} Response data from the API, including token and user details.
  */
 export const signup = async (signupData) => {
   try {
@@ -35,8 +40,18 @@ export const signup = async (signupData) => {
     const lowerRole = role.toLowerCase();
     const endpoint = lowerRole === "admin" ? "/admin/signup" : "/users/signup";
 
-    const response = await axios.post(`${API_BASE_URL}${endpoint}`, { name, email, password, role: lowerRole });
-    return response.data;
+    const response = await axios.post(
+      `${API_BASE_URL}${endpoint}`,
+      { name, email, password, role: lowerRole },
+      { headers: { "Content-Type": "application/json" } }
+    );
+    
+    // If the response includes a token, store it
+    const { token, user } = response.data;
+    if (token) {
+      setAuthToken(token);
+    }
+    return { token, user };
   } catch (error) {
     throw error.response?.data?.message || "Signup failed";
   }
@@ -45,6 +60,10 @@ export const signup = async (signupData) => {
 /**
  * Login a user or admin.
  * @param {Object} credentials - Object containing login credentials.
+ *   Expected keys:
+ *     - email: string
+ *     - password: string
+ *     - role: "user" or "admin"
  * @returns {Object} Response data from the API (JWT token, user details).
  */
 export const login = async (credentials) => {
@@ -57,7 +76,11 @@ export const login = async (credentials) => {
     const lowerRole = role.toLowerCase();
     const endpoint = lowerRole === "admin" ? "/admin/login" : "/users/login";
 
-    const response = await axios.post(`${API_BASE_URL}${endpoint}`, { email, password, role: lowerRole });
+    const response = await axios.post(
+      `${API_BASE_URL}${endpoint}`,
+      { email, password, role: lowerRole },
+      { headers: { "Content-Type": "application/json" } }
+    );
 
     const { token, user } = response.data;
     setAuthToken(token); // Store the token
@@ -69,20 +92,23 @@ export const login = async (credentials) => {
 
 /**
  * Logout a user or admin.
+ * @param {string} role - The role of the account ("admin" or "user").
  * @returns {Object} Response data from the API.
  */
-export const logout = async () => {
+export const logout = async (role) => {
   try {
     const token = getAuthToken();
     if (!token) throw new Error("User is not logged in.");
 
+    const lowerRole = role ? role.toLowerCase() : "user";
+    const endpoint = lowerRole === "admin" ? "/admin/logout" : "/users/logout";
     const response = await axios.post(
-      `${API_BASE_URL}/users/logout`,
+      `${API_BASE_URL}${endpoint}`,
       {},
-      { headers: { Authorization: `Bearer ${token}` } }
+      { headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` } }
     );
 
-    setAuthToken(null); // Remove token
+    setAuthToken(null); // Remove token after logout
     return response.data;
   } catch (error) {
     throw error.response?.data?.message || "Logout failed";
@@ -101,7 +127,6 @@ export const fetchUserData = async () => {
     const response = await axios.get(`${API_BASE_URL}/users/me`, {
       headers: { Authorization: `Bearer ${token}` },
     });
-
     return response.data;
   } catch (error) {
     throw error.response?.data?.message || "Failed to fetch user data";

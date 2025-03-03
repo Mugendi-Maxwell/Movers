@@ -4,7 +4,7 @@ from app.models.user import User
 from app.extensions import db, jwt_blacklist  # Import JWT blacklist
 from flask_jwt_extended import create_access_token, jwt_required
 import bcrypt
-from app.services.auth_service import AuthService
+from app.services.auth_service import logout_user
 
 class UserSignupResource(Resource):
     def post(self):
@@ -79,6 +79,9 @@ class UserLogoutResource(Resource):
     def post(self):
         """
         POST /users/logout
-        Calls AuthService to log out and delete the user account.
+        Logs out the user by revoking the token or performing logout-related actions.
+        Does NOT delete the user.
         """
-        return AuthService.logout_and_delete_user()
+        return logout_user()
+
+

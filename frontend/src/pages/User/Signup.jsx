@@ -1,37 +1,36 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { UserPlusIcon } from '@heroicons/react/24/outline';
 import './signup.css';
-// Import the signup function from your authentication service
 import { signup } from '../../services/authService';
 
 const Signup = () => {
-  // State for each input field
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('');
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const navigate = useNavigate();
 
-  // Submit handler calls the signup service endpoint
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
     setSuccess(null);
 
-    const signupData = {
-      name,
-      email,
-      password,
-      role,
-    };
+    const signupData = { name, email, password, role };
 
     try {
-      
       const result = await signup(signupData);
-      setSuccess("Signup successful! Please log in.");
+      setSuccess("Signup successful! Redirecting...");
       console.log("Signup result:", result);
-      // Optionally, redirect the user to the login page here.
+
+      // Redirect based on role:
+      if (role.toLowerCase() === 'admin') {
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/home');
+      }
     } catch (err) {
       console.error("Signup error:", err);
       setError("Signup failed. Please try again.");
@@ -67,15 +66,13 @@ const Signup = () => {
 
           {/* Password Field */}
           <label htmlFor="password">Password</label>
-          <div className="password-container">
-            <input
-              id="password"
-              type="password"
-              placeholder="Enter at least 8+ characters"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
+          <input
+            id="password"
+            type="password"
+            placeholder="Enter at least 8+ characters"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
           {/* Role Field */}
           <label htmlFor="role">Role</label>

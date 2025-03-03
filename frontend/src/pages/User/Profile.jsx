@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "./Navbar"; // Adjust the path as needed
+import axios from "axios";
 import {
   CalendarDaysIcon,
   CurrencyDollarIcon,
@@ -9,55 +9,142 @@ import {
   StarIcon,
   UserCircleIcon,
 } from "@heroicons/react/24/outline";
+import Navbar from "./Navbar";
 import "./Profile.css";
 
-const Profile = () => {
-  // User profile state (initial details)
-  const [user, setUser] = useState({
-    name: "John Doe",
-    username: "johndoe",
-    email: "johndoe@example.com",
-    phone: "+254712345678",
-  });
-  
-  // Toggle editing mode
-  const [editing, setEditing] = useState(false);
-  const [formData, setFormData] = useState(user);
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-  // For dynamic sidebar data fetching:
+const Profile = () => {
+  // State to store the fetched user details
+  const [user, setUser] = useState(null);
+  // Email input to fetch the profile
+  const [inputEmail, setInputEmail] = useState("");
+  const [userError, setUserError] = useState("");
+  const [loadingUser, setLoadingUser] = useState(false);
+
+  // For editing profile details (only name and email)
+  const [editing, setEditing] = useState(false);
+  const [formData, setFormData] = useState({ name: "", email: "" });
+
+  // Dynamic content for sidebar selection
   const [selectedItem, setSelectedItem] = useState(null);
   const [content, setContent] = useState(null);
 
-  // Fetch data from backend when a sidebar sub-item is selected
-  useEffect(() => {
-    if (!selectedItem) return;
-
-    const fetchData = async () => {
-      try {
-        const res = await fetch(`/api/data?item=${selectedItem}`);
-        if (!res.ok) throw new Error("Network response was not ok");
-        const result = await res.json();
-        setContent(result);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setContent({ error: "Failed to fetch data." });
+  // Fetch user data by email from the /users endpoint
+  const fetchUserByEmail = async () => {
+    if (!inputEmail) {
+      setUserError("Please enter your email.");
+      return;
+    }
+    setLoadingUser(true);
+    try {
+      const res = await axios.get(`${API_BASE_URL}/users`, {
+        headers: { "Content-Type": "application/json" },
+      });
+      // Assume /users returns an array of user objects
+      const matchedUser = res.data.find(
+        (u) => u.email.toLowerCase() === inputEmail.toLowerCase()
+      );
+      if (matchedUser) {
+        setUser(matchedUser);
+        setFormData({ name: matchedUser.name, email: matchedUser.email });
+        setUserError("");
+      } else {
+        setUserError("User not found. Please check your email.");
       }
-    };
-
-    fetchData();
-  }, [selectedItem]);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      setUserError("Error fetching user data.");
+    } finally {
+      setLoadingUser(false);
+    }
+  };
 
   // Handle input changes for editing profile details
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Save updated profile details
+  // Save updated profile details (update localStorage for now)
   const handleUpdate = () => {
     setUser(formData);
+    localStorage.setItem("user", JSON.stringify(formData));
     setEditing(false);
-    // Optionally, post changes to the backend here
+    console.log("Profile updated:", formData);
   };
+
+  // Fetch dynamic content based on sidebar sub-item selection using user.id
+  useEffect(() => {
+    if (!user || !selectedItem) {
+      setContent(null);
+      return;
+    }
+
+    // For booking details: "date", "price", "inventory"
+    if (["date", "price", "inventory"].includes(selectedItem)) {
+      axios
+        .get(`${API_BASE_URL}/bookings`, {
+          params: { user_id: user.id },
+        })
+        .then((res) => {
+          setContent(res.data);
+        })
+        .catch((err) => {
+          console.error("Error fetching booking details:", err);
+          setContent({ error: "Error fetching booking details." });
+        });
+    }
+    // For feedback details: "comment", "rating"
+    else if (["comment", "rating"].includes(selectedItem)) {
+      axios
+        .get(`${API_BASE_URL}/feedback`, {
+          params: { user_id: user.id },
+        })
+        .then((res) => {
+          setContent(res.data);
+        })
+        .catch((err) => {
+          console.error("Error fetching feedback details:", err);
+          setContent({ error: "Error fetching feedback details." });
+        });
+    } else {
+      setContent(null);
+    }
+  }, [selectedItem, user]);
+
+  if (loadingUser) {
+    return (
+      <div>
+        <Navbar />
+        <div className="profile-container">
+          <p>Loading user data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If no user is loaded, show the email input form to fetch profile details.
+  if (!user) {
+    return (
+      <div>
+        <Navbar />
+        <div className="profile-container">
+          <h2>Enter your email to load your profile</h2>
+          <input
+            type="email"
+            placeholder="Enter your email"
+            value={inputEmail}
+            onChange={(e) => setInputEmail(e.target.value)}
+            className="profile-input"
+          />
+          <button onClick={fetchUserByEmail} className="profile-button">
+            Fetch Profile
+          </button>
+          {userError && <p className="error-text">{userError}</p>}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -67,7 +154,6 @@ const Profile = () => {
         <aside className="profile-sidebar">
           <h2>My Dashboard</h2>
           <ul>
-            {/* Booking Details */}
             <li>
               <div className="sidebar-item">
                 <CalendarDaysIcon className="sidebar-icon" />
@@ -94,7 +180,6 @@ const Profile = () => {
                 </li>
               </ul>
             </li>
-            {/* Your Feedback */}
             <li>
               <div className="sidebar-item">
                 <ChatBubbleBottomCenterIcon className="sidebar-icon" />
@@ -120,9 +205,7 @@ const Profile = () => {
 
         {/* Main Content */}
         <main className="profile-main">
-          {/* Conditionally add the "editing" class to profile-info */}
           <div className={`profile-info ${editing ? "editing" : ""}`}>
-            {/* Avatar Icon */}
             <div className="avatar-icon-wrapper">
               <UserCircleIcon className="avatar-icon" />
             </div>
@@ -136,25 +219,11 @@ const Profile = () => {
                   placeholder="Enter your name"
                 />
                 <input
-                  type="text"
-                  name="username"
-                  value={formData.username}
-                  onChange={handleChange}
-                  placeholder="Enter your username"
-                />
-                <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="Enter your email"
-                />
-                <input
-                  type="text"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  placeholder="Enter your phone number"
                 />
                 <button onClick={handleUpdate}>
                   Confirm change and submit
@@ -163,14 +232,12 @@ const Profile = () => {
             ) : (
               <>
                 <h3>{user.name}</h3>
-                <p>Username: {user.username}</p>
                 <p>Email: {user.email}</p>
-                <p>Phone: {user.phone}</p>
                 <button onClick={() => setEditing(true)}>Change Details</button>
               </>
             )}
 
-            {/* Dynamic Content Area for sidebar sub-items */}
+            {/* Dynamic Content Area */}
             <div className="dynamic-content">
               {selectedItem ? (
                 content ? (

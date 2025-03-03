@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { FaCalendarAlt, FaMoneyBillWave, FaCommentDots } from "react-icons/fa";
-//import { Button } from "@/components/ui/button";
+import {
+  FaCalendarAlt,
+  FaMoneyBillWave,
+  FaCommentDots,
+  FaBoxes,
+  FaSignInAlt,
+} from "react-icons/fa";
 import { getAllBookingsAdmin } from "../../services/adminBookingService";
 import { getAllPaymentsAdmin } from "../../services/adminPaymentService";
 import { getAllFeedbackAdmin } from "../../services/feedbackService";
@@ -10,6 +15,7 @@ const Dashboard = () => {
   const [bookings, setBookings] = useState([]);
   const [payments, setPayments] = useState([]);
   const [feedback, setFeedback] = useState([]);
+  const [inventory, setInventory] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,6 +39,14 @@ const Dashboard = () => {
       } catch (error) {
         console.error("Error fetching feedback:", error);
       }
+
+      // Uncomment and update the following if you have an inventory service:
+      // try {
+      //   const inventoryData = await getAllInventoryAdmin();
+      //   setInventory(inventoryData);
+      // } catch (error) {
+      //   console.error("Error fetching inventory:", error);
+      // }
     };
 
     fetchData();
@@ -49,8 +63,10 @@ const Dashboard = () => {
             <FaCalendarAlt /> Total Bookings
           </h2>
           <p className="text-2xl font-bold">{bookings.length}</p>
-          <Link to="/admin/bookings">
-            <Button className="mt-3">Manage Bookings</Button>
+          <Link to="/admin/move-bookings">
+            <button className="mt-3 bg-blue-500 text-white px-4 py-2 rounded">
+              Manage Bookings
+            </button>
           </Link>
         </div>
 
@@ -61,21 +77,50 @@ const Dashboard = () => {
           </h2>
           <p className="text-2xl font-bold">{payments.length}</p>
           <Link to="/admin/payments">
-            <Button className="mt-3">View Payments</Button>
+            <button className="mt-3 bg-blue-500 text-white px-4 py-2 rounded">
+              View Payments
+            </button>
           </Link>
         </div>
 
-        {/* View Feedback */}
+        {/* View Feedbacks */}
         <div className="bg-white shadow-lg rounded-xl p-4">
           <h2 className="text-xl font-semibold flex items-center gap-2">
-            <FaCommentDots /> Total Feedback
+            <FaCommentDots /> Total Feedbacks
           </h2>
           <p className="text-2xl font-bold">{feedback.length}</p>
           <Link to="/admin/feedback">
-            <Button className="mt-3">View Feedback</Button>
+            <button className="mt-3 bg-blue-500 text-white px-4 py-2 rounded">
+              View Feedbacks
+            </button>
           </Link>
         </div>
 
+        {/* Inventory */}
+        <div className="bg-white shadow-lg rounded-xl p-4">
+          <h2 className="text-xl font-semibold flex items-center gap-2">
+            <FaBoxes /> Inventory
+          </h2>
+          <p className="text-2xl font-bold">{inventory.length}</p>
+          <Link to="/admin/inventory">
+            <button className="mt-3 bg-blue-500 text-white px-4 py-2 rounded">
+              View Inventory
+            </button>
+          </Link>
+        </div>
+
+        {/* Login Link */}
+        <div className="bg-white shadow-lg rounded-xl p-4">
+          <h2 className="text-xl font-semibold flex items-center gap-2">
+            <FaSignInAlt /> Login
+          </h2>
+          <Link to="/login">
+            <button className="mt-3 bg-blue-500 text-white px-4 py-2 rounded">
+              Go to Login
+            </button>
+          </Link>
+        </div>
+        
       </div>
     </div>
   );

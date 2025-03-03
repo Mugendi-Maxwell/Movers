@@ -1,9 +1,9 @@
-import axios from 'axios';
+import axios from "axios";
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 /**
- * Get the JWT token from local storage.
+ * Retrieves the JWT token from localStorage.
  */
 const getAuthToken = () => localStorage.getItem("token");
 
@@ -14,9 +14,9 @@ export const getUserPayments = async () => {
   try {
     const token = getAuthToken();
     const response = await axios.get(`${API_BASE_URL}/payments`, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: token ? `Bearer ${token}` : "" },
     });
-    return response.data;
+    return response.data; // Expected to be an array of payment objects
   } catch (error) {
     throw error.response?.data?.message || "Failed to fetch payments";
   }
@@ -30,10 +30,10 @@ export const createUserPayment = async (paymentData) => {
   try {
     const token = getAuthToken();
     const response = await axios.post(`${API_BASE_URL}/payments`, paymentData, {
-      headers: { 
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json"
-      }
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token ? `Bearer ${token}` : "",
+      },
     });
     return response.data;
   } catch (error) {
@@ -42,15 +42,15 @@ export const createUserPayment = async (paymentData) => {
 };
 
 /**
- * Update a payment.
- * @param {number} paymentId
- * @param {Object} paymentData - fields to update
+ * Update an existing payment.
+ * @param {number} paymentId - The ID of the payment to update.
+ * @param {Object} paymentData - Fields to update.
  */
 export const updateUserPayment = async (paymentId, paymentData) => {
   try {
     const token = getAuthToken();
     const response = await axios.put(`${API_BASE_URL}/payments/${paymentId}`, paymentData, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: token ? `Bearer ${token}` : "" },
     });
     return response.data;
   } catch (error) {
@@ -60,13 +60,13 @@ export const updateUserPayment = async (paymentId, paymentData) => {
 
 /**
  * Delete a payment.
- * @param {number} paymentId
+ * @param {number} paymentId - The ID of the payment to delete.
  */
 export const deleteUserPayment = async (paymentId) => {
   try {
     const token = getAuthToken();
     const response = await axios.delete(`${API_BASE_URL}/payments/${paymentId}`, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: token ? `Bearer ${token}` : "" },
     });
     return response.data;
   } catch (error) {

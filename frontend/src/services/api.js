@@ -21,7 +21,7 @@ api.interceptors.response.use(
     ) {
       // Clear token from Redux state & localStorage
       store.dispatch(logoutSuccess());
-      // Optionally, redirect the user to the login page
+      
       window.location.href = '/login';
     }
     return Promise.reject(error);

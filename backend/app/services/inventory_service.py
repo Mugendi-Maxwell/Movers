@@ -1,48 +1,54 @@
-from flask_restful import Resource, Api
-from flask import request
-from flask_jwt_extended import jwt_required
-from app.services.inventory_service import InventoryService
+from app.models.inventory import Inventory  # adjust the import path to your Inventory model
+from app.extensions import db
 
-api = Api()
+class InventoryService:
+    @staticmethod
+    def get_all_items():
+        """Retrieve all inventory items."""
+        items = Inventory.query.all()
+        return [item.to_dict() for item in items]
 
-class InventoryListResource(Resource):
-    @jwt_required()
-    def get(self):
-        """Retrieve all inventory items (Admin Only)."""
-        return InventoryService.get_all_items()
+    @staticmethod
+    def create_item(data):
+        """Create a new inventory item."""
+        # Extract required fields from the request data
+        move_type = data.get("move_type")
+        base_price = data.get("base_price")
+        
+        # Create a new Inventory instance
+        new_item = Inventory(move_type=move_type, base_price=base_price)
+        db.session.add(new_item)
+        db.session.commit()
+        return new_item.to_dict()
 
-    @jwt_required()
-    def post(self):
-        """Create a new inventory item (Admin Only)."""
-        data = request.get_json()
-        return InventoryService.create_item(data), 201
+    @staticmethod
+    def get_item_by_id(item_id):
+        """Retrieve a specific inventory item by its ID."""
+        item = Inventory.query.get(item_id)
+        return item.to_dict() if item else None
 
-api.add_resource(InventoryListResource, "/inventory")
+    @staticmethod
+    def update_item(item_id, data):
+        """Update an existing inventory item."""
+        item = Inventory.query.get(item_id)
+        if not item:
+            return None
 
+        # Update fields if they exist in the incoming data
+        if "move_type" in data:
+            item.move_type = data.get("move_type")
+        if "base_price" in data:
+            item.base_price = data.get("base_price")
+        
+        db.session.commit()
+        return item.to_dict()
 
-class InventoryResource(Resource):
-    @jwt_required()
-    def get(self, item_id):
-        """Retrieve a specific inventory item (Admin Only)."""
-        item = InventoryService.get_item_by_id(item_id)
-        if item:
-            return item, 200
-        return {"message": "Item not found"}, 404
-
-    @jwt_required()
-    def put(self, item_id):
-        """Update an inventory item (Admin Only)."""
-        data = request.get_json()
-        item = InventoryService.update_item(item_id, data)
-        if item:
-            return item, 200
-        return {"message": "Item not found"}, 404
-
-    @jwt_required()
-    def delete(self, item_id):
-        """Delete an inventory item (Admin Only)."""
-        if InventoryService.delete_item(item_id):
-            return {"message": "Item deleted successfully"}, 200
-        return {"message": "Item not found"}, 404
-
-api.add_resource(InventoryResource, "/inventory/<int:item_id>")
+    @staticmethod
+    def delete_item(item_id):
+        """Delete an inventory item."""
+        item = Inventory.query.get(item_id)
+        if not item:
+            return False
+        db.session.delete(item)
+        db.session.commit()
+        return True

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import "./BookMove.css";
 import moveImage from "../../assets/image.png";
@@ -8,8 +9,9 @@ import moveImage from "../../assets/image.png";
 import { createUserBooking } from "../../services/bookingService";
 
 const BookMove = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
-    name: "",
     currentAddress: "",
     moveAddress: "",
     date: "",
@@ -20,7 +22,7 @@ const BookMove = () => {
 
   const [moveTypes, setMoveTypes] = useState([]);
 
-  // Fetch move types from the inventory API using Vite environment variable for base URL
+  // Fetch move types (inventory) from the backend using the Vite API URL
   useEffect(() => {
     const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
     axios
@@ -38,25 +40,40 @@ const BookMove = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Update move type and price when move type selection changes
+  // Update move type and price when selection changes
   const handleMoveTypeChange = (e) => {
-    const selectedMove = moveTypes.find((item) => item.type === e.target.value);
+    const selectedValue = e.target.value;
+    const selectedMove = moveTypes.find((item) => item.move_type === selectedValue);
     setFormData({
       ...formData,
-      moveType: selectedMove?.type || "",
-      price: selectedMove?.price || "",
+      moveType: selectedMove ? selectedMove.move_type : "",
+      price: selectedMove ? selectedMove.base_price : "",
     });
   };
 
-  // Handle form submission by calling the booking service endpoint
+  // Handle form submission by calling the booking service and then navigating to payment page
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Combine date and time into an ISO datetime string
+    const move_date = `${formData.date}T${formData.time}`;
+
+    // Prepare booking data according to backend expectations
+    const bookingData = {
+      pickup_location: formData.currentAddress,
+      dropoff_location: formData.moveAddress,
+      move_date: move_date,
+      total_price: formData.price,
+      move_type: formData.moveType,
+      status: "pending",
+    };
+
     try {
-      // Call the createUserBooking function from the booking service
-      const bookingResponse = await createUserBooking(formData);
+      const bookingResponse = await createUserBooking(bookingData);
       alert("Move booked successfully!");
       console.log("Booking response:", bookingResponse);
-      // Optionally, you can reset the form here or redirect the user
+      // Navigate to the payment page after successful booking.
+      navigate("/payment");
     } catch (error) {
       console.error("Error booking move:", error);
       alert("Failed to book move.");
@@ -65,24 +82,11 @@ const BookMove = () => {
 
   return (
     <div>
-      {/* Navbar at the top */}
       <Navbar />
       <div className="book-move-container">
-        {/* Left side: Form */}
         <div className="book-move-form">
           <h1>Book Move</h1>
           <form onSubmit={handleSubmit}>
-            <label htmlFor="name">Your Name</label>
-            <input
-              id="name"
-              name="name"
-              type="text"
-              placeholder="Your name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-            />
-
             <label htmlFor="currentAddress">Current Address</label>
             <input
               id="currentAddress"
@@ -135,8 +139,8 @@ const BookMove = () => {
             >
               <option value="">Select move type</option>
               {moveTypes.map((item) => (
-                <option key={item.type} value={item.type}>
-                  {item.type} - ${item.price}
+                <option key={item.id} value={item.move_type}>
+                  {item.move_type} - ${item.base_price}
                 </option>
               ))}
             </select>
@@ -153,8 +157,6 @@ const BookMove = () => {
             <button type="submit">Book Move</button>
           </form>
         </div>
-
-        {/* Right side: Illustration */}
         <div className="book-move-illustration">
           <img src={moveImage} alt="Road with cars" />
         </div>

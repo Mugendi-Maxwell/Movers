@@ -21,16 +21,16 @@ const Signup = () => {
     const signupData = { name, email, password, role };
 
     try {
-      const result = await signup(signupData);
+      await signup(signupData);
       setSuccess("Signup successful! Redirecting...");
-      console.log("Signup result:", result);
-
-      // Redirect based on role:
-      if (role.toLowerCase() === 'admin') {
-        navigate('/admin/dashboard');
-      } else {
-        navigate('/home');
-      }
+      
+      setTimeout(() => {
+        if (role.toLowerCase() === 'admin') {
+          navigate('/admin/dashboard');
+        } else {
+          navigate('/login');
+        }
+      }, 2000); // Redirect after 2 seconds
     } catch (err) {
       console.error("Signup error:", err);
       setError("Signup failed. Please try again.");
@@ -44,52 +44,21 @@ const Signup = () => {
         {error && <p className="error">{error}</p>}
         {success && <p className="success">{success}</p>}
         <form onSubmit={handleSubmit}>
-          {/* Name Field */}
           <label htmlFor="name">Name</label>
-          <input
-            id="name"
-            type="text"
-            placeholder="Your Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
+          <input id="name" type="text" placeholder="Your Name" value={name} onChange={(e) => setName(e.target.value)} />
 
-          {/* Email Field */}
           <label htmlFor="email">Email</label>
-          <input
-            id="email"
-            type="email"
-            placeholder="example.email@gmail.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+          <input id="email" type="email" placeholder="example.email@gmail.com" value={email} onChange={(e) => setEmail(e.target.value)} />
 
-          {/* Password Field */}
           <label htmlFor="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            placeholder="Enter at least 8+ characters"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <input id="password" type="password" placeholder="Enter at least 8+ characters" value={password} onChange={(e) => setPassword(e.target.value)} />
 
-          {/* Role Field */}
           <label htmlFor="role">Role</label>
-          <input
-            id="role"
-            type="text"
-            placeholder="e.g., Admin or User"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-          />
+          <input id="role" type="text" placeholder="e.g., Admin or User" value={role} onChange={(e) => setRole(e.target.value)} />
 
-          {/* Submit Button */}
           <button type="submit">Sign up</button>
         </form>
       </div>
-
-      {/* Right side: signup icon */}
       <div className="signup-illustration">
         <UserPlusIcon className="signup-icon" />
       </div>

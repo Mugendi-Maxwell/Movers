@@ -8,7 +8,7 @@ class FeedbackService:
         """
         Retrieve all feedback records for the authenticated user.
         """
-        user_id = get_jwt_identity()  # ✅ Get user ID from JWT
+        user_id = get_jwt_identity()  # Get user ID from JWT
         feedbacks = Feedback.query.filter_by(user_id=user_id).all()
         return [fb.to_dict() for fb in feedbacks]
 
@@ -27,19 +27,18 @@ class FeedbackService:
     def create_feedback(data):
         """
         Create a new feedback entry.
-        Expected keys: 'booking_id', 'rating', 'comments' (optional)
+        Expected keys: 'rating', 'comments' (optional)
         """
-        user_id = get_jwt_identity()  # ✅ Extract user_id from JWT
+        user_id = get_jwt_identity()  # Extract user_id from JWT
 
-        # Validate required fields
-        if "booking_id" not in data or "rating" not in data:
-            return {"message": "Missing required fields: 'booking_id' and 'rating'"}, 400
+        # Validate required field
+        if "rating" not in data:
+            return {"message": "Missing required field: 'rating'"}, 400
 
         new_feedback = Feedback(
-            user_id=user_id,  # ✅ Set user_id from JWT
-            booking_id=data["booking_id"],
+            user_id=user_id,  # Set user_id from JWT
             rating=data["rating"],
-            comments=data.get("comments", "")  # Optional field
+            comments=data.get("comments", "")
         )
 
         try:
@@ -62,7 +61,6 @@ class FeedbackService:
         if not fb:
             return {"message": "Feedback not found or unauthorized"}, 404
 
-        # Update fields if provided
         if "rating" in data:
             fb.rating = data["rating"]
         if "comments" in data:

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar"; // Adjust path if needed
 import { login, logout } from "../../services/authService";
 import "./Login.css";
@@ -10,6 +11,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const navigate = useNavigate();
 
   // Handle login submission
   const handleLogin = async (e) => {
@@ -21,7 +23,11 @@ const Login = () => {
       const response = await login({ email, password, role: "user" });
       setSuccess("Logged in successfully!");
       console.log("Login response:", response);
-      // Optionally: store auth token and redirect the user
+      
+      // Redirect user to the Booking page
+      setTimeout(() => {
+        navigate("/booking");
+      }, 2000);
     } catch (err) {
       console.error("Login error:", err);
       setError("Failed to log in.");

@@ -136,19 +136,19 @@ const styles = {
   },
   tableHeader: {
     backgroundColor: "#333333", // Dark Gray
-    color: "#00BFFF", // Neon Blue text
+    color: "#00BFFF", 
     fontSize: "18px",
     textAlign: "left",
     padding: "12px",
   },
   rowEven: {
-    backgroundColor: "#222222", // Charcoal
+    backgroundColor: "#222222", 
     borderBottom: "1px solid #444444",
     textAlign: "left",
     padding: "10px",
   },
   rowOdd: {
-    backgroundColor: "#333333", // Dark Gray
+    backgroundColor: "#333333", 
     borderBottom: "1px solid #444444",
     textAlign: "left",
     padding: "10px",

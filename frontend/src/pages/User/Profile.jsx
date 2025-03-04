@@ -16,10 +16,8 @@ const Profile = () => {
   const [inputEmail, setInputEmail] = useState("");
   const [userError, setUserError] = useState("");
   const [loadingUser, setLoadingUser] = useState(false);
-
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({ name: "", email: "" });
-
   const [selectedItem, setSelectedItem] = useState(null);
   const [content, setContent] = useState(null);
 
@@ -79,24 +77,29 @@ const Profile = () => {
         params: { user_id: user.id },
       })
       .then((res) => {
-        const userBookings = res.data.filter((booking) => booking.user_id === user.id);
+        const userBookings = res.data.filter(
+          (booking) => booking.user_id === user.id
+        );
         if (selectedItem === "date") {
-          const dates = userBookings.map((booking) =>
-            booking.move_date
-              ? new Date(booking.move_date).toLocaleDateString()
-              : "No date available"
+          setContent(
+            userBookings.map((booking) =>
+              booking.move_date
+                ? new Date(booking.move_date).toLocaleDateString()
+                : "No date available"
+            )
           );
-          setContent(dates);
         } else if (selectedItem === "price") {
-          const prices = userBookings.map(
-            (booking) => booking.total_price || "No price available"
+          setContent(
+            userBookings.map(
+              (booking) => booking.total_price || "No price available"
+            )
           );
-          setContent(prices);
         } else if (selectedItem === "inventory") {
-          const moveTypes = userBookings.map(
-            (booking) => booking.move_type || "No move type available"
+          setContent(
+            userBookings.map(
+              (booking) => booking.move_type || "No move type available"
+            )
           );
-          setContent(moveTypes);
         } else {
           setContent(userBookings);
         }
@@ -153,24 +156,9 @@ const Profile = () => {
                 <h1>Booking Details</h1>
               </div>
               <ul className="sub-list">
-                <li onClick={() => setSelectedItem("date")}>
-                  <div className="sidebar-sub-item">
-                    <CalendarDaysIcon className="sidebar-sub-icon" />
-                    <span>Date</span>
-                  </div>
-                </li>
-                <li onClick={() => setSelectedItem("price")}>
-                  <div className="sidebar-sub-item">
-                    <CurrencyDollarIcon className="sidebar-sub-icon" />
-                    <span>Price</span>
-                  </div>
-                </li>
-                <li onClick={() => setSelectedItem("inventory")}>
-                  <div className="sidebar-sub-item">
-                    <ClipboardDocumentListIcon className="sidebar-sub-icon" />
-                    <span>Inventory</span>
-                  </div>
-                </li>
+                <li onClick={() => setSelectedItem("date")}>Date</li>
+                <li onClick={() => setSelectedItem("price")}>Price</li>
+                <li onClick={() => setSelectedItem("inventory")}>Inventory</li>
               </ul>
             </li>
           </ul>
@@ -178,9 +166,7 @@ const Profile = () => {
 
         <main className="profile-main">
           <div className={`profile-info ${editing ? "editing" : ""}`}>
-            <div className="avatar-icon-wrapper">
-              <UserCircleIcon className="avatar-icon" />
-            </div>
+            <UserCircleIcon className="avatar-icon" />
             {editing ? (
               <>
                 <input
@@ -188,14 +174,12 @@ const Profile = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  placeholder="Enter your name"
                 />
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="Enter your email"
                 />
                 <button onClick={handleUpdate}>Confirm change and submit</button>
               </>
@@ -203,8 +187,26 @@ const Profile = () => {
               <>
                 <h3>{user.name}</h3>
                 <p>Email: {user.email}</p>
-                <button onClick={() => setEditing(true)}>Change Details</button>
+                <button onClick={() => setEditing(true)}>
+                  Change Details
+                </button>
               </>
+            )}
+          </div>
+
+          <div className="dynamic-content">
+            {selectedItem && content ? (
+              content.error ? (
+                <p className="error-text">{content.error}</p>
+              ) : (
+                <ul>
+                  {content.map((item, index) => (
+                    <li key={index}>{item}</li>
+                  ))}
+                </ul>
+              )
+            ) : (
+              <p>Select a sub-item on the left to see details.</p>
             )}
           </div>
         </main>

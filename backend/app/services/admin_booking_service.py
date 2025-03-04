@@ -23,7 +23,7 @@ class AdminBookingService:
                 booking.status = data['status']
             if 'move_date' in data:
                 try:
-                    # Expecting ISO formatted date string.
+                    
                     booking.move_date = datetime.fromisoformat(data['move_date'])
                 except Exception as e:
                     return {"message": f"Invalid move_date format: {str(e)}"}

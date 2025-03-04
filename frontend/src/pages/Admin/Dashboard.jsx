@@ -45,65 +45,120 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div className="dashboard-container">
-      <h1 className="dashboard-heading">Admin Dashboard</h1>
-      <div className="dashboard-grid">
+    <div style={styles.container}>
+      <h1 style={styles.title}>Admin Dashboard</h1>
+      <div style={styles.grid}>
         {/* Manage Bookings */}
-        <div className="card">
-          <div className="card-heading">
+        <div style={styles.card}>
+          <div style={styles.cardTitle}>
             <FaCalendarAlt /> Total Bookings
           </div>
-          <div className="card-number">{bookings.length}</div>
+          <div style={styles.cardNumber}>{bookings.length}</div>
           <Link to="/admin/move-bookings">
-            <button className="btn">Manage Bookings</button>
+            <button style={styles.button}>Manage Bookings</button>
           </Link>
         </div>
 
         {/* View Payments */}
-        <div className="card">
-          <div className="card-heading">
+        <div style={styles.card}>
+          <div style={styles.cardTitle}>
             <FaMoneyBillWave /> Total Payments
           </div>
-          <div className="card-number">{payments.length}</div>
+          <div style={styles.cardNumber}>{payments.length}</div>
           <Link to="/admin/payments">
-            <button className="btn">View Payments</button>
+            <button style={styles.button}>View Payments</button>
           </Link>
         </div>
 
         {/* View Feedbacks */}
-        <div className="card">
-          <div className="card-heading">
+        <div style={styles.card}>
+          <div style={styles.cardTitle}>
             <FaCommentDots /> Total Feedbacks
           </div>
-          <div className="card-number">{feedback.length}</div>
+          <div style={styles.cardNumber}>{feedback.length}</div>
           <Link to="/admin/feedback">
-            <button className="btn">View Feedbacks</button>
+            <button style={styles.button}>View Feedbacks</button>
           </Link>
         </div>
 
         {/* Inventory */}
-        <div className="card">
-          <div className="card-heading">
+        <div style={styles.card}>
+          <div style={styles.cardTitle}>
             <FaBoxes /> Inventory
           </div>
-          <div className="card-number">{inventory.length}</div>
+          <div style={styles.cardNumber}>{inventory.length}</div>
           <Link to="/admin/inventory">
-            <button className="btn">View Inventory</button>
+            <button style={styles.button}>View Inventory</button>
           </Link>
         </div>
 
         {/* Login Link */}
-        <div className="card">
-          <div className="card-heading">
+        <div style={styles.card}>
+          <div style={styles.cardTitle}>
             <FaSignInAlt /> Login
           </div>
           <Link to="/login">
-            <button className="btn">Go to Login</button>
+            <button style={styles.button}>Go to Login</button>
           </Link>
         </div>
       </div>
     </div>
   );
+};
+
+// CSS-in-JS styles
+const styles = {
+  container: {
+    minHeight: "100vh",
+    backgroundColor: "#000000", // Black
+    padding: "20px",
+    textAlign: "center",
+  },
+  title: {
+    fontSize: "36px",
+    fontWeight: "bold",
+    color: "#00BFFF", // Neon Blue
+    marginBottom: "20px",
+  },
+  grid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+    gap: "20px",
+    justifyContent: "center",
+  },
+  card: {
+    backgroundColor: "#222222", // Charcoal
+    color: "#FFFFFF", // White text
+    padding: "20px",
+    borderRadius: "10px",
+    boxShadow: "2px 2px 10px rgba(0, 191, 255, 0.5)", // Neon Blue Glow
+    textAlign: "center",
+  },
+  cardTitle: {
+    fontSize: "20px",
+    fontWeight: "bold",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "10px",
+  },
+  cardNumber: {
+    fontSize: "30px",
+    fontWeight: "bold",
+    margin: "10px 0",
+    color: "#00BFFF", // Neon Blue
+  },
+  button: {
+    backgroundColor: "#00BFFF", // Neon Blue
+    color: "#000000", // Black text
+    padding: "10px 15px",
+    fontSize: "16px",
+    fontWeight: "bold",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+    transition: "background 0.3s, transform 0.2s",
+  },
 };
 
 export default Dashboard;

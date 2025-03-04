@@ -4,9 +4,6 @@ import {
   CalendarDaysIcon,
   CurrencyDollarIcon,
   ClipboardDocumentListIcon,
-  ChatBubbleBottomCenterIcon,
-  DocumentTextIcon,
-  StarIcon,
   UserCircleIcon,
 } from "@heroicons/react/24/outline";
 import Navbar from "./Navbar";
@@ -31,7 +28,9 @@ const Profile = () => {
     }
     setLoadingUser(true);
     try {
-      const res = await axios.get(`${API_BASE_URL}/users`);
+      const res = await axios.get(`${API_BASE_URL}/users`, {
+        headers: { "Content-Type": "application/json" },
+      });
       const matchedUser = res.data.find(
         (u) => u.email.toLowerCase() === inputEmail.toLowerCase()
       );
@@ -54,10 +53,18 @@ const Profile = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleUpdate = () => {
-    setUser(formData);
-    localStorage.setItem("user", JSON.stringify(formData));
-    setEditing(false);
+  const handleUpdate = async () => {
+    try {
+      const res = await axios.put(`${API_BASE_URL}/users/${user.id}`, formData, {
+        headers: { "Content-Type": "application/json" },
+      });
+      setUser(res.data);
+      localStorage.setItem("user", JSON.stringify(res.data));
+      setEditing(false);
+      console.log("Profile updated:", res.data);
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    }
   };
 
   useEffect(() => {
@@ -65,26 +72,26 @@ const Profile = () => {
       setContent(null);
       return;
     }
-
-    const fetchData = async () => {
-      try {
-        let endpoint =
-          selectedItem === "comment" || selectedItem === "rating"
-            ? "feedback"
-            : "bookings";
-
-        const res = await axios.get(`${API_BASE_URL}/${endpoint}`, {
-          params: { user_id: user.id },
-        });
-
-        setContent(res.data);
-      } catch (err) {
+    axios
+      .get(`${API_BASE_URL}/bookings`, {
+        params: { user_id: user.id },
+      })
+      .then((res) => {
+        const userBookings = res.data.filter((booking) => booking.user_id === user.id);
+        if (selectedItem === "date") {
+          setContent(userBookings.map((booking) => booking.move_date ? new Date(booking.move_date).toLocaleDateString() : "No date available"));
+        } else if (selectedItem === "price") {
+          setContent(userBookings.map((booking) => booking.total_price || "No price available"));
+        } else if (selectedItem === "inventory") {
+          setContent(userBookings.map((booking) => booking.move_type || "No move type available"));
+        } else {
+          setContent(userBookings);
+        }
+      })
+      .catch((err) => {
         console.error(`Error fetching ${selectedItem} data:`, err);
         setContent({ error: `Error fetching ${selectedItem} data.` });
-      }
-    };
-
-    fetchData();
+      });
   }, [selectedItem, user]);
 
   if (loadingUser) {
@@ -133,70 +140,20 @@ const Profile = () => {
                 <h1>Booking Details</h1>
               </div>
               <ul className="sub-list">
-                <li onClick={() => setSelectedItem("date")}>
-                  <div className="sidebar-sub-item">
-                    <CalendarDaysIcon className="sidebar-sub-icon" />
-                    <span>Date</span>
-                  </div>
-                </li>
-                <li onClick={() => setSelectedItem("price")}>
-                  <div className="sidebar-sub-item">
-                    <CurrencyDollarIcon className="sidebar-sub-icon" />
-                    <span>Price</span>
-                  </div>
-                </li>
-                <li onClick={() => setSelectedItem("inventory")}>
-                  <div className="sidebar-sub-item">
-                    <ClipboardDocumentListIcon className="sidebar-sub-icon" />
-                    <span>Inventory</span>
-                  </div>
-                </li>
-              </ul>
-            </li>
-            <li>
-              <div className="sidebar-item">
-                <ChatBubbleBottomCenterIcon className="sidebar-icon" />
-                <h2>Your Feedback</h2>
-              </div>
-              <ul className="sub-list">
-                <li onClick={() => setSelectedItem("comment")}>
-                  <div className="sidebar-sub-item">
-                    <DocumentTextIcon className="sidebar-sub-icon" />
-                    <span>Comment</span>
-                  </div>
-                </li>
-                <li onClick={() => setSelectedItem("rating")}>
-                  <div className="sidebar-sub-item">
-                    <StarIcon className="sidebar-sub-icon" />
-                    <span>Rating</span>
-                  </div>
-                </li>
+                <li onClick={() => setSelectedItem("date")}>Date</li>
+                <li onClick={() => setSelectedItem("price")}>Price</li>
+                <li onClick={() => setSelectedItem("inventory")}>Inventory</li>
               </ul>
             </li>
           </ul>
         </aside>
-
         <main className="profile-main">
           <div className={`profile-info ${editing ? "editing" : ""}`}>
-            <div className="avatar-icon-wrapper">
-              <UserCircleIcon className="avatar-icon" />
-            </div>
+            <UserCircleIcon className="avatar-icon" />
             {editing ? (
               <>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder="Enter your name"
-                />
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="Enter your email"
-                />
+                <input type="text" name="name" value={formData.name} onChange={handleChange} />
+                <input type="email" name="email" value={formData.email} onChange={handleChange} />
                 <button onClick={handleUpdate}>Confirm change and submit</button>
               </>
             ) : (
@@ -206,6 +163,13 @@ const Profile = () => {
                 <button onClick={() => setEditing(true)}>Change Details</button>
               </>
             )}
+          </div>
+          <div className="dynamic-content">
+            {selectedItem && content ? (
+              content.error ? <p className="error-text">{content.error}</p> : (
+                <ul>{content.map((item, index) => <li key={index}>{item}</li>)}</ul>
+              )
+            ) : <p>Select a sub-item on the left to see details.</p>}
           </div>
         </main>
       </div>

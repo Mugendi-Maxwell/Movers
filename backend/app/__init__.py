@@ -60,7 +60,7 @@ def create_app():
     api.add_resource(PaymentListResource, '/payments')
     api.add_resource(PaymentResource, '/payments/<int:id>')
     api.add_resource(UserListResource, '/users')
-    api.add_resource(UserResource, '/users/<int:id>')
+    api.add_resource(UserResource, '/users/<int:user_id>')
     api.add_resource(FeedbackListResource, '/feedback')
     api.add_resource(FeedbackResource, '/feedback/<int:feedback_id>')
 

@@ -12,22 +12,17 @@ import "./Profile.css";
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const Profile = () => {
-  // State for storing the user fetched by email.
   const [user, setUser] = useState(null);
-  // Email input for fetching user details.
   const [inputEmail, setInputEmail] = useState("");
   const [userError, setUserError] = useState("");
   const [loadingUser, setLoadingUser] = useState(false);
 
-  // State for editing profile details (only name and email).
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({ name: "", email: "" });
 
-  // State for dynamic sidebar selection and content.
   const [selectedItem, setSelectedItem] = useState(null);
   const [content, setContent] = useState(null);
 
-  // Fetch user data by email from the /users endpoint.
   const fetchUserByEmail = async () => {
     if (!inputEmail) {
       setUserError("Please enter your email.");
@@ -38,7 +33,6 @@ const Profile = () => {
       const res = await axios.get(`${API_BASE_URL}/users`, {
         headers: { "Content-Type": "application/json" },
       });
-      // Assume /users returns an array of user objects.
       const matchedUser = res.data.find(
         (u) => u.email.toLowerCase() === inputEmail.toLowerCase()
       );
@@ -57,12 +51,10 @@ const Profile = () => {
     }
   };
 
-  // Handle input changes in the editing form.
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Save updated profile details by sending a PUT request.
   const handleUpdate = async () => {
     try {
       const res = await axios.put(`${API_BASE_URL}/users/${user.id}`, formData, {
@@ -77,21 +69,17 @@ const Profile = () => {
     }
   };
 
-  // Fetch dynamic content based on sidebar selection using the user's id.
   useEffect(() => {
     if (!user || !selectedItem) {
       setContent(null);
       return;
     }
-    // We'll always fetch from the bookings endpoint for booking details.
     axios
       .get(`${API_BASE_URL}/bookings`, {
         params: { user_id: user.id },
       })
       .then((res) => {
-        // Filter out only those bookings that belong to this user (if backend isn't filtering).
         const userBookings = res.data.filter((booking) => booking.user_id === user.id);
-        // Now, for the selected sub-item, extract only the relevant field.
         if (selectedItem === "date") {
           const dates = userBookings.map((booking) =>
             booking.move_date
@@ -156,7 +144,6 @@ const Profile = () => {
     <div>
       <Navbar />
       <div className="profile-container">
-        {/* Left Sidebar */}
         <aside className="profile-sidebar">
           <h2>My Dashboard</h2>
           <ul>
@@ -189,7 +176,6 @@ const Profile = () => {
           </ul>
         </aside>
 
-        {/* Main Content */}
         <main className="profile-main">
           <div className={`profile-info ${editing ? "editing" : ""}`}>
             <div className="avatar-icon-wrapper">
@@ -220,89 +206,9 @@ const Profile = () => {
                 <button onClick={() => setEditing(true)}>Change Details</button>
               </>
             )}
-
-            {/* Dynamic Content Area */}
-            <div className="dynamic-content">
-              {selectedItem ? (
-                content ? (
-                  content.error ? (
-                    <p className="error-text">{content.error}</p>
-                  ) : (
-                    <>
-                      <h4>Data for: {selectedItem}</h4>
-                      {selectedItem === "date" && (
-                        <ul>
-                          {content.map((date, index) => (
-                            <li key={index}>{date}</li>
-                          ))}
-                        </ul>
-                      )}
-                      {selectedItem === "price" && (
-                        <ul>
-                          {content.map((price, index) => (
-                            <li key={index}>{price}</li>
-                          ))}
-                        </ul>
-                      )}
-                      {selectedItem === "inventory" && (
-                        <ul>
-                          {content.map((moveType, index) => (
-                            <li key={index}>{moveType}</li>
-                          ))}
-                        </ul>
-                      )}
-                    </>
-                  )
-                ) : (
-                  <p>Loading...</p>
-                )
-              ) : (
-                <p>Select a sub-item on the left to see details.</p>
-              )}
-            </div>
           </div>
         </main>
       </div>
-
-      {/* Inline CSS */}
-      <style>{`
-        body {
-          background-color: #333;
-          color: white;
-          font-family: Arial, sans-serif;
-          margin: 0;
-          padding: 0;
-        }
-        .profile-container {
-          display: flex;
-          margin-top: 80px;
-          padding: 20px;
-          min-height: 100vh;
-        }
-        .profile-sidebar {
-          width: 250px;
-          background: #222;
-          padding: 20px;
-          border-radius: 10px;
-          box-shadow: 0px 4px 10px rgba(0, 191, 255, 0.3);
-        }
-        .profile-main {
-          flex-grow: 1;
-          margin-left: 20px;
-          padding: 20px;
-          background: #222;
-          border-radius: 10px;
-          box-shadow: 0px 4px 10px rgba(0, 191, 255, 0.3);
-        }
-        .profile-button {
-          background-color: #00BFFF;
-          color: white;
-          padding: 10px 15px;
-          border: none;
-          cursor: pointer;
-          border-radius: 5px;
-        }
-      `}</style>
     </div>
   );
 };

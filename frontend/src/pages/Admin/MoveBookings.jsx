@@ -110,19 +110,18 @@ const MoveBookings = () => {
   );
 };
 
-// CSS-in-JS Styles
 const styles = {
   container: {
     minHeight: "100vh",
-    backgroundColor: "#000000", // Black background
+    backgroundColor: "#000000",
     padding: "20px",
     textAlign: "center",
-    color: "#FFFFFF", // White text
+    color: "#FFFFFF",
   },
   title: {
     fontSize: "32px",
     fontWeight: "bold",
-    color: "#00BFFF", // Neon Blue
+    color: "#00BFFF",
     marginBottom: "20px",
   },
   error: {
@@ -136,15 +135,15 @@ const styles = {
   table: {
     width: "100%",
     borderCollapse: "collapse",
-    backgroundColor: "#222222", // Charcoal
+    backgroundColor: "#222222",
     color: "#FFFFFF",
     borderRadius: "10px",
     overflow: "hidden",
-    boxShadow: "2px 2px 10px rgba(0, 191, 255, 0.5)", // Neon Blue Glow
+    boxShadow: "2px 2px 10px rgba(0, 191, 255, 0.5)",
   },
   tableHeader: {
-    backgroundColor: "#333333", // Dark Gray
-    color: "#00BFFF", // Neon Blue text
+    backgroundColor: "#333333",
+    color: "#00BFFF",
     fontSize: "18px",
     textAlign: "left",
     padding: "12px",
@@ -155,8 +154,8 @@ const styles = {
     padding: "10px",
   },
   button: {
-    backgroundColor: "#00BFFF", // Neon Blue
-    color: "#000000", // Black text
+    backgroundColor: "#00BFFF",
+    color: "#000000",
     padding: "8px 12px",
     fontSize: "14px",
     fontWeight: "bold",
@@ -166,7 +165,7 @@ const styles = {
     transition: "background 0.3s, transform 0.2s",
   },
   buttonHover: {
-    backgroundColor: "#009ACD", // Slightly darker blue
+    backgroundColor: "#009ACD",
     transform: "scale(1.05)",
   },
   noPayment: {
@@ -175,7 +174,6 @@ const styles = {
   },
 };
 
-// Button hover effect
 styles.button[":hover"] = styles.buttonHover;
 
 export default MoveBookings;

@@ -4,6 +4,8 @@
 #
 #    pip-compile requirements.in
 #
+aniso8601==10.0.0
+    # via flask-restful
 blinker==1.6.3
     # via
     #   flask
@@ -14,7 +16,10 @@ flask==3.0.0
     # via
     #   -r requirements.in
     #   flask-mail
+    #   flask-restful
 flask-mail==0.10.0
+    # via -r requirements.in
+flask-restful==0.3.10
     # via -r requirements.in
 greenlet==3.1.1
     # via sqlalchemy
@@ -34,6 +39,10 @@ packaging==24.2
     # via gunicorn
 psycopg2-binary==2.9.10
     # via -r requirements.in
+pytz==2025.1
+    # via flask-restful
+six==1.17.0
+    # via flask-restful
 sqlalchemy==2.0.21
     # via -r requirements.in
 typing-extensions==4.8.0

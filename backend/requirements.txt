@@ -6,6 +6,8 @@
 #
 aniso8601==10.0.0
     # via flask-restful
+bcrypt==4.3.0
+    # via -r requirements.in
 blinker==1.6.3
     # via
     #   flask

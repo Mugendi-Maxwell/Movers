@@ -13,7 +13,7 @@ def create_app():
     app.config.from_object(Config)
 
     # Enable CORS for all routes
-    CORS(app)
+    CORS(app, resources={r"/*":{"origins":"https://moverease.onrender.com"}})
 
     # Configure JWT
     app.config["JWT_SECRET_KEY"] = "your_secret_key_here"  # Replace with a secure key

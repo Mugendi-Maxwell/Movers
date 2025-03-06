@@ -12,6 +12,8 @@ blinker==1.6.3
     #   flask-mail
 click==8.1.7
     # via flask
+dotenv==0.9.9
+    # via -r requirements.in
 flask==3.0.0
     # via
     #   -r requirements.in
@@ -50,6 +52,8 @@ psycopg2-binary==2.9.10
     # via -r requirements.in
 pyjwt==2.9.0
     # via flask-jwt-extended
+python-dotenv==1.0.1
+    # via dotenv
 pytz==2025.1
     # via flask-restful
 six==1.17.0

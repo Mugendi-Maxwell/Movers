@@ -15,8 +15,11 @@ click==8.1.7
 flask==3.0.0
     # via
     #   -r requirements.in
+    #   flask-cors
     #   flask-mail
     #   flask-restful
+flask-cors==5.0.0
+    # via -r requirements.in
 flask-mail==0.10.0
     # via -r requirements.in
 flask-restful==0.3.10

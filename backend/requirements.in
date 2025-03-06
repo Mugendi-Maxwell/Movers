@@ -1,5 +1,6 @@
-Flask
-SQLAlchemy
+flask
+sqlalchemy
 psycopg2-binary
-Flask-Mail
+flask-mail
 gunicorn
+flask-restful

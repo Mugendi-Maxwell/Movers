@@ -1,14 +1,11 @@
-/* src/pages/PaymentPage.css */
-
-/* Define color variables */
 :root {
-  --primary-color: #a9a9a9;  /* Dark Gray */
-  --secondary-color: #36454f; /* Charcoal */
-  --accent-color: #00bfff; /* Neon Blue */
-  --background-color: #000000; /* Black */
+  --primary-color: #a9a9a9;  
+  --secondary-color: #36454f; 
+  --accent-color: #00bfff; 
+  --background-color: #000000; 
 }
 
-/* Full-page layout */
+
 .payment-container {
   display: flex;
   flex-direction: column;
@@ -18,31 +15,31 @@
   background: var(--background-color);
 }
 
-/* Payment box */
+
 .payment-box {
   background: var(--secondary-color);
   padding: 2rem;
   border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0, 191, 255, 0.3); /* Neon Blue glow effect */
+  box-shadow: 0 8px 20px rgba(0, 191, 255, 0.3); 
   width: 350px;
   text-align: center;
   transition: transform 0.2s ease-in-out;
   color: var(--primary-color);
 }
 
-/* Slight lift on hover */
+
 .payment-box:hover {
   transform: translateY(-5px);
 }
 
-/* Header */
+
 .payment-box h2 {
   font-size: 1.8rem;
   margin-bottom: 1rem;
   color: var(--accent-color);
 }
 
-/* Input fields */
+
 .payment-input {
   width: 100%;
   padding: 12px;
@@ -55,13 +52,13 @@
   transition: border-color 0.3s ease-in-out;
 }
 
-/* Highlight input on focus */
+
 .payment-input:focus {
   border-color: var(--accent-color);
   outline: none;
 }
 
-/* Payment button */
+
 .payment-button {
   width: 100%;
   padding: 12px;
@@ -76,26 +73,26 @@
   margin-top: 10px;
 }
 
-/* Smooth hover effect */
+
 .payment-button:hover {
   background: linear-gradient(to right, #0080ff, #0056b3);
   transform: scale(1.05);
 }
 
-/* Disabled button */
+
 .payment-button:disabled {
   background: #444;
   cursor: not-allowed;
 }
 
-/* Error message */
+
 .payment-message {
   margin-top: 10px;
   color: var(--accent-color);
   font-size: 0.9rem;
 }
 
-/* Responsive Design */
+
 @media (max-width: 480px) {
   .payment-box {
       width: 90%;

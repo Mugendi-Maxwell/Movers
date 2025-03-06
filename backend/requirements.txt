@@ -16,9 +16,12 @@ flask==3.0.0
     # via
     #   -r requirements.in
     #   flask-cors
+    #   flask-jwt-extended
     #   flask-mail
     #   flask-restful
 flask-cors==5.0.0
+    # via -r requirements.in
+flask-jwt-extended==4.6.0
     # via -r requirements.in
 flask-mail==0.10.0
     # via -r requirements.in
@@ -42,6 +45,8 @@ packaging==24.2
     # via gunicorn
 psycopg2-binary==2.9.10
     # via -r requirements.in
+pyjwt==2.9.0
+    # via flask-jwt-extended
 pytz==2025.1
     # via flask-restful
 six==1.17.0
@@ -51,6 +56,8 @@ sqlalchemy==2.0.21
 typing-extensions==4.8.0
     # via sqlalchemy
 werkzeug==3.0.0
-    # via flask
+    # via
+    #   flask
+    #   flask-jwt-extended
 zipp==3.17.0
     # via importlib-metadata

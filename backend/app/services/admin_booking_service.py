@@ -1,6 +1,7 @@
 from app.models.booking import Booking
 from app.extensions import db
 from datetime import datetime
+from app.services.email_service import send_confirmation_email
 
 class AdminBookingService:
     @staticmethod
@@ -23,7 +24,7 @@ class AdminBookingService:
                 booking.status = data['status']
             if 'move_date' in data:
                 try:
-                    
+                    # Expecting an ISO formatted date string.
                     booking.move_date = datetime.fromisoformat(data['move_date'])
                 except Exception as e:
                     return {"message": f"Invalid move_date format: {str(e)}"}
@@ -44,6 +45,7 @@ class AdminBookingService:
         """
         Confirm a booking by updating its status to "Confirmed".
         Only bookings with a "pending" status can be confirmed.
+        After a successful commit, sends a confirmation email using Flask-Mail.
         """
         booking = Booking.query.get(booking_id)
         if not booking:
@@ -53,6 +55,8 @@ class AdminBookingService:
         booking.status = "Confirmed"
         try:
             db.session.commit()
+            # Send confirmation email to the user associated with this booking.
+            send_confirmation_email(booking.user.email, booking)
             return booking.to_dict()
         except Exception as e:
             db.session.rollback()

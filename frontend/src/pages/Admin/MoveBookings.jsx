@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -9,8 +9,10 @@ const MoveBookings = () => {
   
   const [bookings, setBookings] = useState([]);
   const [paidBookingIds, setPaidBookingIds] = useState(new Set());
+  const [userMapping, setUserMapping] = useState({}); // Map user_id -> user name
   const [error, setError] = useState(null);
 
+  // Fetch bookings from admin endpoint.
   useEffect(() => {
     axios.get(`${API_BASE_URL}/admin/bookings`, {
       headers: { "Content-Type": "application/json" },
@@ -24,6 +26,7 @@ const MoveBookings = () => {
     });
   }, []);
 
+  // Fetch payments to determine which bookings have been paid.
   useEffect(() => {
     axios.get(`${API_BASE_URL}/admin/payments`, {
       headers: { "Content-Type": "application/json" },
@@ -34,6 +37,23 @@ const MoveBookings = () => {
     })
     .catch((err) => {
       console.error("Error fetching payments:", err);
+    });
+  }, []);
+
+  // Fetch all users to build a mapping from user_id to user name.
+  useEffect(() => {
+    axios.get(`${API_BASE_URL}/users`, {
+      headers: { "Content-Type": "application/json" },
+    })
+    .then((res) => {
+      const mapping = {};
+      res.data.forEach((user) => {
+        mapping[user.id] = user.name;
+      });
+      setUserMapping(mapping);
+    })
+    .catch((err) => {
+      console.error("Error fetching users:", err);
     });
   }, []);
 
@@ -61,50 +81,63 @@ const MoveBookings = () => {
   return (
     <div style={styles.container}>
       <h1 style={styles.title}>Manage Move Bookings</h1>
+      <Link to="/admin/dashboard" style={styles.link}>
+        ← Back to Dashboard
+      </Link>
       {error && <p style={styles.error}>{error}</p>}
       {bookings.length === 0 ? (
         <p style={styles.noBookings}>No bookings found.</p>
       ) : (
-        <table style={styles.table}>
-          <thead>
-            <tr style={styles.tableHeader}>
-              <th>ID</th>
-              <th>User ID</th>
-              <th>Move Type</th>
-              <th>Pickup Location</th>
-              <th>Dropoff Location</th>
-              <th>Move Date</th>
-              <th>Total Price</th>
-              <th>Status</th>
-              <th>Created At</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {bookings.map((booking) => (
-              <tr key={booking.id} style={styles.tableRow}>
-                <td>{booking.id}</td>
-                <td>{booking.user_id}</td>
-                <td>{booking.move_type}</td>
-                <td>{booking.pickup_location}</td>
-                <td>{booking.dropoff_location}</td>
-                <td>{booking.move_date ? new Date(booking.move_date).toLocaleString() : "-"}</td>
-                <td>{booking.total_price}</td>
-                <td>{booking.status}</td>
-                <td>{booking.created_at ? new Date(booking.created_at).toLocaleString() : "-"}</td>
-                <td>
-                  {paidBookingIds.has(booking.id) && booking.status.toLowerCase() === "pending" ? (
-                    <button onClick={() => handleConfirmMove(booking.id)} style={styles.button}>
-                      Confirm Move
-                    </button>
-                  ) : (
-                    <span style={styles.noPayment}>No Payment</span>
-                  )}
-                </td>
+        <div style={styles.tableWrapper}>
+          <table style={styles.table}>
+            <thead style={styles.tableHeader}>
+              <tr>
+                <th style={styles.th}>ID</th>
+                <th style={styles.th}>User Name</th>
+                <th style={styles.th}>Move Type</th>
+                <th style={styles.th}>Pickup Location</th>
+                <th style={styles.th}>Dropoff Location</th>
+                <th style={styles.th}>Move Date</th>
+                <th style={styles.th}>Total Price</th>
+                <th style={styles.th}>Status</th>
+                <th style={styles.th}>Created At</th>
+                <th style={styles.th}>Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {bookings.map((booking) => (
+                <tr key={booking.id} style={styles.tr}>
+                  <td style={styles.td}>{booking.id}</td>
+                  <td style={styles.td}>{userMapping[booking.user_id] || booking.user_id}</td>
+                  <td style={styles.td}>{booking.move_type}</td>
+                  <td style={styles.td}>{booking.pickup_location}</td>
+                  <td style={styles.td}>{booking.dropoff_location}</td>
+                  <td style={styles.td}>
+                    {booking.move_date ? new Date(booking.move_date).toLocaleString() : "-"}
+                  </td>
+                  <td style={styles.td}>{booking.total_price}</td>
+                  <td style={styles.td}>{booking.status}</td>
+                  <td style={styles.td}>
+                    {booking.created_at ? new Date(booking.created_at).toLocaleString() : "-"}
+                  </td>
+                  <td style={styles.td}>
+                    {booking.status.toLowerCase() === "confirmed" ? (
+                      <span style={styles.paid}>Paid</span>
+                    ) : (
+                      paidBookingIds.has(booking.id) ? (
+                        <button onClick={() => handleConfirmMove(booking.id)} style={styles.button}>
+                          Confirm Move
+                        </button>
+                      ) : (
+                        <span style={styles.noPayment}>No Payment</span>
+                      )
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );
@@ -113,49 +146,67 @@ const MoveBookings = () => {
 const styles = {
   container: {
     minHeight: "100vh",
-    backgroundColor: "#000000",
+    backgroundColor: "#121212",
     padding: "20px",
     textAlign: "center",
-    color: "#FFFFFF",
+    color: "#EEEEEE",
+    fontFamily: "Arial, sans-serif",
   },
   title: {
-    fontSize: "32px",
+    fontSize: "36px",
     fontWeight: "bold",
     color: "#00BFFF",
     marginBottom: "20px",
   },
-  error: {
-    color: "#FF0000",
+  link: {
+    display: "inline-block",
+    marginBottom: "20px",
+    fontSize: "16px",
+    color: "#00BFFF",
+    textDecoration: "none",
     fontWeight: "bold",
   },
+  error: {
+    color: "#FF5555",
+    fontWeight: "bold",
+    marginBottom: "20px",
+  },
   noBookings: {
-    fontSize: "18px",
+    fontSize: "20px",
     fontStyle: "italic",
+  },
+  tableWrapper: {
+    overflowX: "auto",
+    marginTop: "20px",
   },
   table: {
     width: "100%",
     borderCollapse: "collapse",
-    backgroundColor: "#222222",
-    color: "#FFFFFF",
-    borderRadius: "10px",
-    overflow: "hidden",
-    boxShadow: "2px 2px 10px rgba(0, 191, 255, 0.5)",
+    backgroundColor: "#1E1E1E",
+    borderRadius: "8px",
+    boxShadow: "0px 4px 10px rgba(0, 191, 255, 0.3)",
   },
   tableHeader: {
     backgroundColor: "#333333",
-    color: "#00BFFF",
-    fontSize: "18px",
-    textAlign: "left",
-    padding: "12px",
   },
-  tableRow: {
-    borderBottom: "1px solid #444444",
+  th: {
+    padding: "12px 15px",
     textAlign: "left",
-    padding: "10px",
+    color: "#00BFFF",
+    fontSize: "16px",
+    borderBottom: "2px solid #444444",
+  },
+  tr: {
+    borderBottom: "1px solid #444444",
+  },
+  td: {
+    padding: "10px 15px",
+    textAlign: "left",
+    fontSize: "14px",
   },
   button: {
     backgroundColor: "#00BFFF",
-    color: "#000000",
+    color: "#121212",
     padding: "8px 12px",
     fontSize: "14px",
     fontWeight: "bold",
@@ -164,16 +215,14 @@ const styles = {
     cursor: "pointer",
     transition: "background 0.3s, transform 0.2s",
   },
-  buttonHover: {
-    backgroundColor: "#009ACD",
-    transform: "scale(1.05)",
-  },
   noPayment: {
     color: "#FF4444",
     fontWeight: "bold",
   },
+  paid: {
+    color: "green",
+    fontWeight: "bold",
+  },
 };
-
-styles.button[":hover"] = styles.buttonHover;
 
 export default MoveBookings;

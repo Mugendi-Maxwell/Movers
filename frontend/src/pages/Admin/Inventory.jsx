@@ -1,13 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { getInventoryItems, createInventoryItem } from "../../services/inventoryService";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import {
+  getInventoryItems,
+  createInventoryItem,
+  updateInventoryItem,
+  deleteInventoryItem,
+} from "../../services/inventoryService";
 
 const Inventory = () => {
   const [items, setItems] = useState([]);
   const [newItem, setNewItem] = useState({ move_type: "", base_price: 0 });
   const [error, setError] = useState("");
+  // editingId is null when adding a new item; otherwise, it holds the id of the item being edited.
+  const [editingId, setEditingId] = useState(null);
 
+  // Fetch inventory items when the component mounts.
   useEffect(() => {
-    // Fetch inventory items when the component mounts
     const fetchItems = async () => {
       try {
         const data = await getInventoryItems();
@@ -20,77 +28,131 @@ const Inventory = () => {
     fetchItems();
   }, []);
 
-  const addItem = async () => {
-    try {
-      const addedItem = await createInventoryItem(newItem);
-      setItems([...items, addedItem]);
-      setNewItem({ move_type: "", base_price: 0 });
-    } catch (err) {
-      console.error("Error adding item:", err);
-      alert("Failed to add item");
+  const handleSubmit = async () => {
+    if (editingId) {
+      try {
+        const updatedItem = await updateInventoryItem(editingId, newItem);
+        setItems(items.map((item) => (item.id === editingId ? updatedItem : item)));
+        setEditingId(null);
+        setNewItem({ move_type: "", base_price: 0 });
+      } catch (err) {
+        console.error("Error updating item:", err);
+        alert("Failed to update item");
+      }
+    } else {
+      try {
+        const addedItem = await createInventoryItem(newItem);
+        setItems([...items, addedItem]);
+        setNewItem({ move_type: "", base_price: 0 });
+      } catch (err) {
+        console.error("Error adding item:", err);
+        alert("Failed to add item");
+      }
     }
   };
 
+  const handleDelete = async (itemId) => {
+    try {
+      await deleteInventoryItem(itemId);
+      setItems(items.filter((item) => item.id !== itemId));
+    } catch (err) {
+      console.error("Error deleting item:", err);
+      alert("Failed to delete item");
+    }
+  };
+
+  const handleEditClick = (item) => {
+    setEditingId(item.id);
+    setNewItem({ move_type: item.move_type, base_price: item.base_price });
+  };
+
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-4">Inventory Management</h1>
-      {error && <div className="text-red-500 font-bold mb-4">{error}</div>}
-      <div className="mb-4 flex gap-2">
+    <div style={styles.container}>
+      <h1 style={styles.title}>Inventory Management</h1>
+      <Link to="/admin/dashboard" style={styles.link}>
+        ← Back to Dashboard
+      </Link>
+      {error && <div style={styles.error}>{error}</div>}
+      <div style={styles.form}>
         <input
           type="text"
           placeholder="Move Type"
           value={newItem.move_type}
-          onChange={(e) => setNewItem({ ...newItem, move_type: e.target.value })}
-          className="border p-2 rounded"
+          onChange={(e) =>
+            setNewItem({ ...newItem, move_type: e.target.value })
+          }
+          style={styles.input}
         />
         <input
           type="number"
           placeholder="Base Price"
           value={newItem.base_price}
-          onChange={(e) => setNewItem({ ...newItem, base_price: Number(e.target.value) })}
-          className="border p-2 rounded"
+          onChange={(e) =>
+            setNewItem({ ...newItem, base_price: Number(e.target.value) })
+          }
+          style={styles.input}
         />
-        <button onClick={addItem} className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
-          Add Item
+        <button onClick={handleSubmit} style={styles.button}>
+          {editingId ? "Update Item" : "Add Item"}
         </button>
       </div>
-      <table className="w-full bg-white shadow-md rounded-xl">
-        <thead>
-          <tr className="bg-gray-200">
-            <th className="p-2">Move Type</th>
-            <th className="p-2">Base Price</th>
-            <th className="p-2">Created At</th>
-          </tr>
-        </thead>
-        <tbody>
-          {items.map((item) => (
-            <tr key={item.id} className="border-t">
-              <td className="p-2">{item.move_type}</td>
-              <td className="p-2">${item.base_price}</td>
-              <td className="p-2">{new Date(item.created_at).toLocaleString()}</td>
+      <div style={styles.tableWrapper}>
+        <table style={styles.table}>
+          <thead style={styles.tableHeader}>
+            <tr>
+              <th style={styles.th}>Move Type</th>
+              <th style={styles.th}>Base Price</th>
+              <th style={styles.th}>Created At</th>
+              <th style={styles.th}>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {items.map((item) => (
+              <tr key={item.id} style={styles.tr}>
+                <td style={styles.td}>{item.move_type}</td>
+                <td style={styles.td}>${item.base_price}</td>
+                <td style={styles.td}>
+                  {item.created_at ? new Date(item.created_at).toLocaleString() : "-"}
+                </td>
+                <td style={styles.td}>
+                  <button onClick={() => handleEditClick(item)} style={styles.actionButton}>
+                    Update
+                  </button>
+                  <button onClick={() => handleDelete(item.id)} style={styles.deleteButton}>
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
 
-
-// CSS-in-JS Styles
 const styles = {
   container: {
     minHeight: "100vh",
-    backgroundColor: "#000000", // Black background
+    backgroundColor: "#000000",
     padding: "20px",
     textAlign: "center",
-    color: "#FFFFFF", // White text
+    color: "#FFFFFF",
+    fontFamily: "Arial, sans-serif",
   },
   title: {
     fontSize: "32px",
     fontWeight: "bold",
-    color: "#00BFFF", // Neon Blue
+    color: "#00BFFF",
     marginBottom: "20px",
+  },
+  link: {
+    display: "inline-block",
+    marginBottom: "20px",
+    fontSize: "16px",
+    color: "#00BFFF",
+    textDecoration: "none",
+    fontWeight: "bold",
   },
   error: {
     color: "#FF4444",
@@ -105,52 +167,77 @@ const styles = {
   },
   input: {
     padding: "10px",
-    border: "1px solid #00BFFF", // Neon Blue border
+    border: "1px solid #00BFFF",
     borderRadius: "5px",
-    backgroundColor: "#222222", // Charcoal background
+    backgroundColor: "#222222",
     color: "#FFFFFF",
   },
   button: {
-    backgroundColor: "#00BFFF", // Neon Blue
-    color: "#000000", // Black text
+    backgroundColor: "#00BFFF",
+    color: "#000000",
     padding: "10px 15px",
     border: "none",
     borderRadius: "5px",
     cursor: "pointer",
     fontWeight: "bold",
   },
-  tableContainer: {
+  tableWrapper: {
     overflowX: "auto",
+    marginTop: "20px",
   },
   table: {
     width: "100%",
     borderCollapse: "collapse",
-    backgroundColor: "#222222", // Charcoal
+    backgroundColor: "#222222",
     color: "#FFFFFF",
     borderRadius: "10px",
     overflow: "hidden",
-    boxShadow: "2px 2px 10px rgba(0, 191, 255, 0.5)", // Neon Blue Glow
+    boxShadow: "2px 2px 10px rgba(0, 191, 255, 0.5)",
   },
   tableHeader: {
-    backgroundColor: "#333333", // Dark Gray
-    color: "#00BFFF", 
+    backgroundColor: "#333333",
+    color: "#00BFFF",
     fontSize: "18px",
     textAlign: "left",
     padding: "12px",
   },
-  rowEven: {
-    backgroundColor: "#222222", 
-    borderBottom: "1px solid #444444",
+  th: {
+    padding: "12px 15px",
     textAlign: "left",
-    padding: "10px",
+    fontSize: "16px",
+    borderBottom: "2px solid #444444",
   },
-  rowOdd: {
-    backgroundColor: "#333333", 
+  tr: {
     borderBottom: "1px solid #444444",
+  },
+  td: {
+    padding: "10px 15px",
     textAlign: "left",
-    padding: "10px",
+    fontSize: "14px",
+  },
+  actionButton: {
+    backgroundColor: "#00BFFF",
+    color: "#121212",
+    padding: "6px 10px",
+    fontSize: "12px",
+    fontWeight: "bold",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+    marginRight: "5px",
+    transition: "background 0.3s",
+  },
+  deleteButton: {
+    backgroundColor: "#FF4444",
+    color: "#FFFFFF",
+    padding: "6px 10px",
+    fontSize: "12px",
+    fontWeight: "bold",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+    transition: "background 0.3s",
   },
 };
-
 
 export default Inventory;

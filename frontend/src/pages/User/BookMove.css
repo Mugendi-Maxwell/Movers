@@ -1,0 +1,96 @@
+.book-move-container {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  width: 80%;
+  margin: 40px auto;
+  background: #222222; /* Dark gray background */
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(0, 191, 255, 0.3); /* Neon blue glow */
+  overflow: hidden;
+}
+
+/* Form Styling */
+.book-move-form {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #333333; /* Slightly lighter gray */
+}
+
+.book-move-form h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #00BFFF; /* Neon Blue */
+}
+
+/* Form layout */
+.book-move-form form {
+  display: flex;
+  flex-direction: column;
+}
+
+.book-move-form label {
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: #FFFFFF; /* White text */
+}
+
+/* Input & Select Styling */
+.book-move-form input,
+.book-move-form select {
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #00BFFF; /* Neon Blue border */
+  border-radius: 5px;
+  font-size: 1rem;
+  background-color: #444444; /* Darker Gray */
+  color: #FFFFFF; /* White text */
+}
+
+/* Button Styling */
+.book-move-form button {
+  padding: 12px;
+  background: #00BFFF; /* Neon Blue */
+  color: #000000; /* Black text */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 10px;
+  transition: background 0.3s ease, color 0.3s ease;
+  font-weight: bold;
+}
+
+.book-move-form button:hover {
+  background: #0094CC; /* Slightly darker blue */
+  color: #FFFFFF;
+}
+
+/* Illustration Section */
+.book-move-illustration {
+  flex: 1;
+  background: #222222; /* Matching dark mode */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.book-move-illustration img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .book-move-container {
+    flex-direction: column;
+    width: 90%;
+  }
+
+  .book-move-illustration {
+    display: none; /* Hide illustration on mobile */
+  }
+}

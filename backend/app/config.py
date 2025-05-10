@@ -1,4 +1,20 @@
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 class Config:
+    SECRET_KEY = os.getenv('SECRET_KEY', 'your_secret_key_here')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SECRET_KEY = 'your_secret_key_here'
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///movers.db'  # SQLite URI for local file database
+    # Use the DATABASE_URL environment variable if provided; otherwise default to a local PostgreSQL database.
+    SQLALCHEMY_DATABASE_URI = os.getenv(
+        'DATABASE_URL',
+        'postgresql://movers_user:your_password@localhost:5432/movers'
+    )
+
+    MAIL_SERVER = os.getenv("MAIL_SERVER", "smtp.gmail.com")
+    MAIL_PORT = int(os.getenv("MAIL_PORT", 587))
+    MAIL_USE_TLS = os.getenv("MAIL_USE_TLS", "true").lower() in ["true", "1", "t"]
+    MAIL_USERNAME = os.getenv("MAIL_USERNAME")
+    MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
+    MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER", "noreply@yourdomain.com")

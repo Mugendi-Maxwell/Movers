@@ -1,0 +1,11 @@
+flask
+sqlalchemy
+psycopg2-binary
+flask-mail
+gunicorn
+flask-restful
+flask-cors
+flask-jwt-extended
+flask-sqlalchemy
+dotenv
+bcrypt

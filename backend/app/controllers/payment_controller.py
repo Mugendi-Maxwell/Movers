@@ -1,55 +1,54 @@
-from flask_restful import Resource
+from flask_restful import Resource, Api
 from flask import request
-from app.models.payment import Payment
-from app.extensions import db
+from app.services.payment_service import PaymentService
 
-class PaymentResource(Resource):
-    def get(self, id=None):
-        """
-        GET method to retrieve a single payment by ID or all payments.
-        """
-        if id:
-            # Fetch a single payment by ID
-            payment = Payment.query.get_or_404(id)
-            return {'id': payment.id, 'amount': payment.amount, 'status': payment.status, 'booking_id': payment.booking_id}
-        else:
-            # Fetch all payments
-            payments = Payment.query.all()
-            return [{'id': payment.id, 'amount': payment.amount, 'status': payment.status, 'booking_id': payment.booking_id} for payment in payments]
+api = Api()
+
+class PaymentListResource(Resource):
+    def get(self):
+        # Retrieve email from query parameters
+        email = request.args.get("email")
+        if not email:
+            return {"message": "Email query parameter is required."}, 400
+        payments, status_code = PaymentService.get_all_payments(email)
+        return payments, status_code
 
     def post(self):
-        """
-        POST method to create a new payment.
-        """
         data = request.get_json()
-        new_payment = Payment(
-            amount=data['amount'],
-            status=data['status'],
-            booking_id=data['booking_id']
-        )
-        db.session.add(new_payment)
-        db.session.commit()
-        return {'message': 'Payment created successfully', 'id': new_payment.id}, 201
+        # Ensure required fields are present: amount, payment_method, booking_id, and email.
+        if not data.get("amount") or not data.get("payment_method") or not data.get("booking_id") or not data.get("email"):
+            return {"message": "Amount, payment method, booking ID, and email are required."}, 400
+        payment, status_code = PaymentService.create_payment(data)
+        return payment, status_code
+
+api.add_resource(PaymentListResource, '/payments')
+
+class PaymentResource(Resource):
+    def get(self, id):
+        # Retrieve email from query parameters
+        email = request.args.get("email")
+        if not email:
+            return {"message": "Email query parameter is required."}, 400
+        payment, status_code = PaymentService.get_payment_by_id(id, email)
+        if payment and isinstance(payment, dict) and payment.get("message"):
+            return payment, status_code
+        return payment, status_code
 
     def put(self, id):
-        """
-        PUT method to update an existing payment by ID.
-        """
         data = request.get_json()
-        payment = Payment.query.get_or_404(id)
-
-        # Update payment details
-        payment.amount = data['amount']
-        payment.status = data['status']
-        db.session.commit()
-
-        return {'message': 'Payment updated successfully'}
+        # Ensure email is provided in the request JSON.
+        email = data.get("email")
+        if not email:
+            return {"message": "Email is required."}, 400
+        updated_payment, status_code = PaymentService.update_payment(id, data, email)
+        return updated_payment, status_code
 
     def delete(self, id):
-        """
-        DELETE method to delete a payment by ID.
-        """
-        payment = Payment.query.get_or_404(id)
-        db.session.delete(payment)
-        db.session.commit()
-        return {'message': 'Payment deleted successfully'}
+        # Retrieve email from query parameters
+        email = request.args.get("email")
+        if not email:
+            return {"message": "Email query parameter is required."}, 400
+        result, status_code = PaymentService.delete_payment(id, email)
+        return result, status_code
+
+api.add_resource(PaymentResource, '/payments/<int:id>')

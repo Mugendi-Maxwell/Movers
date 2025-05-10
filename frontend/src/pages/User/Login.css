@@ -1,0 +1,98 @@
+/* Full-page layout with a black background */
+.login-page {
+  width: 100vw;
+  height: 100vh;
+  background: #000000; /* Dark mode background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Centered login container */
+.login-container {
+  width: 350px;
+  background: #222222; /* Dark Gray */
+  border-radius: 8px;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 0 15px rgba(0, 191, 255, 0.3); /* Neon Blue Glow */
+}
+
+.login-container h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #00BFFF; /* Neon Blue */
+}
+
+/* Form styling */
+.login-container form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+/* Hide default label text for screen readers only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  border: 0;
+}
+
+/* Email & Password fields */
+.login-container input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #00BFFF; /* Neon Blue border */
+  border-radius: 5px;
+  font-size: 1rem;
+  background-color: #333333; /* Darker Gray */
+  color: #FFFFFF; /* White text */
+}
+
+/* Password container with eye icon toggle */
+.password-container {
+  position: relative;
+  width: 100%;
+}
+
+/* Toggle password visibility button */
+.toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: #00BFFF; /* Neon Blue */
+}
+
+/* Login & Logout buttons */
+.login-btn,
+.logout-btn {
+  width: 100%;
+  padding: 12px;
+  background: #00BFFF; /* Neon Blue */
+  color: #000000; /* Black text */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-bottom: 10px;
+  transition: background 0.3s ease, color 0.3s ease;
+  font-weight: bold;
+}
+
+.login-btn:hover,
+.logout-btn:hover {
+  background: #0094CC; /* Slightly darker blue */
+  color: #FFFFFF;
+}

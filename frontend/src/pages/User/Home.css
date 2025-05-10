@@ -1,0 +1,90 @@
+/* Import custom font from Google Fonts (Poppins) */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+/* Global Reset */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: 'Poppins', Arial, sans-serif;
+  background: #222222; /* Dark mode background */
+  color: #ffffff; /* White text */
+}
+
+/* Home Container: full viewport height */
+.home-container {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* Top Header with Company Title */
+.top-header {
+  background: #333333; /* Dark gray header */
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 191, 255, 0.2); /* Neon glow */
+}
+.company-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #ffffff; /* White text */
+  text-align: center;
+}
+
+/* Navigation Bar with Icons stretched across width */
+.icon-nav {
+  background: #333333; /* Dark gray */
+  border-top: 1px solid #444444; /* Subtle separation */
+}
+.icon-nav ul {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.icon-nav li {
+  flex: 1; /* Each icon takes equal space */
+  text-align: center;
+  padding: 15px 0;
+  cursor: pointer;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+.icon-nav li:hover {
+  background: #444444; /* Slightly lighter gray */
+  box-shadow: 0 0 10px rgba(0, 191, 255, 0.4); /* Neon blue glow */
+}
+
+/* Icon styling */
+.icon {
+  width: 28px;
+  height: 28px;
+  color: #00BFFF; /* Neon blue */
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+.icon:hover {
+  color: #1E90FF; /* Lighter neon blue */
+  transform: scale(1.1);
+}
+
+/* Main Content Area */
+.main-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background: #222222; /* Consistent dark mode */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .home-container {
+    flex-direction: column;
+    width: 100vw;
+    height: 100%;
+  }
+  .icon-nav li {
+    padding: 10px 0;
+  }
+}
